@@ -1,6 +1,5 @@
 from flask import Blueprint,render_template,redirect,url_for
 from flask import current_app as app
-from flask_login import current_user, login_required
 from ..models import db, User
 from .. import login_manager
 from ..utils import role_required   
@@ -15,6 +14,7 @@ home_bp = Blueprint(
 def dashboard():
     return render_template(
         'index.html',        
+        segment = 'dashboard',
         current_user=current_user,        
     )
 

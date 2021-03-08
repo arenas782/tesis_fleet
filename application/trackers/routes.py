@@ -5,14 +5,14 @@ from ..utils import role_required
 from flask_login import login_required, logout_user, current_user, login_user, logout_user
 
 # Blueprint Configuration
-drivers_bp = Blueprint(
-    'drivers_bp', __name__,url_prefix='/drivers')
+trackers_bp = Blueprint(
+    'trackers_bp', __name__,url_prefix='/trackers')
 
-@drivers_bp.route('/')
+@trackers_bp.route('/')
 @login_required
 def home():
     return render_template(
-        'drivers/index.html',        
-        segment = 'drivers',
+        'trackers/index.html',        
+        segment = 'trackers',
         current_user=current_user,        
     )
