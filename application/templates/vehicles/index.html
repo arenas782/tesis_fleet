@@ -40,19 +40,19 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Conductores</h1>
+            <h1 class="m-0 text-dark">Vehículos</h1>
             
-            {% with messages = get_flashed_messages()%}
-              {% if messages %}
-                {% for message in messages%}
-                    <div class="alert alert-danger alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <h5><i class="icon fas fa-ban"></i> Error!</h5>
-                        {{message}}
-                  </div>
-                {% endfor%}
-              {% endif %}
-            {% endwith %}
+            {% with messages = get_flashed_messages(with_categories=true)%}
+            {% if messages %}
+              {% for category,message in messages%}
+                  <div class="alert alert-{{category}} alert-dismissible">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                      
+                      {{message}}
+                </div>
+              {% endfor%}
+            {% endif %}
+          {% endwith %}
             
           </div><!-- /.col -->
           
@@ -68,55 +68,50 @@
         
         <!-- /.row -->
         <!-- Main row -->
+        
         <div class="row">
           <!-- Left col -->
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Responsive Hover Table</h3>
-            
+                <h3 class="card-title">Listado de vehículos </h3>            
+                <a href="{{url_for('vehicles_bp.add')}}" class="btn btn-primary float-right "><b>Nuevo</b></a>            
               </div>
               <!-- /.card-header -->
               <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
                   <thead>
                     <tr>
-                      <th>ID</th>
-                      <th>User</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Reason</th>
+                      <th>Placa</th>
+                      <th>Marca</th>
+                      <th>Modelo</th>
+                      <th>Color</th>
+                      <th>Año</th>                      
+                      <th>Conductor</th>
+                      <th>Foto</th>
+                      <th>Ver</th>
+                      
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>183</td>
-                      <td>John Doe</td>
-                      <td>11-7-2014</td>
-                      <td><span class="tag tag-success">Approved</span></td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
-                    <tr>
-                      <td>219</td>
-                      <td>Alexander Pierce</td>
-                      <td>11-7-2014</td>
-                      <td><span class="tag tag-warning">Pending</span></td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
-                    <tr>
-                      <td>657</td>
-                      <td>Bob Doe</td>
-                      <td>11-7-2014</td>
-                      <td><span class="tag tag-primary">Approved</span></td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
-                    <tr>
-                      <td>175</td>
-                      <td>Mike Doe</td>
-                      <td>11-7-2014</td>
-                      <td><span class="tag tag-danger">Denied</span></td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
+                    {% for vehicle in vehicles%}
+                      <tr>
+                        <td>{{vehicle.plate}}</td>
+                        <td>{{vehicle.brand.name}}</td>
+                        <td>{{vehicle.model}}</td>
+                        <td>{{vehicle.color}}</td>
+                        <td>{{vehicle.year}}</td>                                                                                            
+                        <td>
+                          {% if vehicle.driver != None%}
+                          <a href="{{url_for('drivers_bp.profile',id=vehicle.driver.id)}}">{{vehicle.driver.name}} {{vehicle.driver.lastname}}</a>                            
+                          {% else %}
+                            <span class="right badge badge-danger">Sin asignar</span>
+                          {%endif%}
+                        </td>
+                        <td><img src="/static/uploads/vehicles/{{vehicle.photo}}" class="img-fluid" width=200/></td>
+                        <td><a href="{{url_for('vehicles_bp.detail',id=vehicle.id)}}"><i class="icon fas fa-eye"></i></a></td>                                    
+                      </tr>
+                    {%endfor%}                    
                   </tbody>
                 </table>
               </div>

@@ -55,3 +55,76 @@ class UserRoles(db.Model):
         db.Integer, 
         db.ForeignKey('roles.id'),     
     )
+
+class DriversVehicles(db.Model):
+    __tablename__ = 'drivers_vehicles'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer(), primary_key=True)
+    driver_id = db.Column(
+        db.Integer(), 
+        db.ForeignKey('drivers.id'), 
+    )
+
+    vehicle_id = db.Column(
+        db.Integer, 
+        db.ForeignKey('vehicles.id'),     
+    )
+
+
+class Vehicle(db.Model):
+    __tablename__ = 'vehicles'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer(), primary_key=True)
+    plate = db.Column(db.String(10), unique=True)
+    color = db.Column(db.String(20))
+    model = db.Column(db.String(30))
+    year = db.Column(db.SmallInteger())
+    photo =  db.Column(db.String(150))
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
+    
+    #relations
+    brand_id = db.Column(db.Integer, db.ForeignKey('vehicles_brands.id'))
+    brand = db.relationship('VehicleBrand')
+    driver_id = db.Column(db.Integer, db.ForeignKey('drivers.id', ondelete='cascade'),nullable=True)
+    driver = db.relationship('Driver')
+
+class VehicleBrand(db.Model):
+    __tablename__ = 'vehicles_brands'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(30), unique=True)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    
+    #relations
+    vehicles = db.relationship("Vehicle", backref="vehicles", lazy='dynamic')
+    
+    
+    
+class Driver(db.Model):
+    __tablename__ = 'drivers'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer(), primary_key=True)
+    dni = db.Column(db.String(15), unique=True)
+    name = db.Column(db.String(40))
+    lastname = db.Column(db.String(40))
+    address = db.Column(db.String(200))
+    email = db.Column(db.String(40))
+    phone = db.Column(db.String(20))
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
+
+    #relations
+    vehicles = db.relationship("Vehicle", lazy='dynamic')
+
+    #functions
+    def update(self):
+        db.session.commit()
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()

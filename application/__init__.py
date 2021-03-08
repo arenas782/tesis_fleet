@@ -14,8 +14,9 @@ login_manager = LoginManager()
 def init_app():
     """Initialize the core application."""
     app = Flask(__name__, instance_relative_config=True)
+    UPLOAD_FOLDER = '/home/arenas/Escritorio/tesis/application/static/uploads/vehicles'
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-    
     
     app.config.from_object('config.DevConfig')
     

@@ -40,8 +40,8 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Dashboard</h1>
-            <h1>Hi, {{ current_user.name }}!</h1>
+            <h1 class="m-0 text-dark">Perfil del conductor</h1>
+            
             {% with messages = get_flashed_messages()%}
               {% if messages %}
                 {% for message in messages%}
@@ -55,12 +55,7 @@
             {% endwith %}
             
           </div><!-- /.col -->
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard v1</li>
-            </ol>
-          </div><!-- /.col -->
+          
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
@@ -70,73 +65,88 @@
     <section class="content">
       <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
-        <div class="row">
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-info">
-              <div class="inner">
-                <h3>150</h3>
-
-                <p>New Orders</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-bag"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-success">
-              <div class="inner">
-                <h3>{{total_vehicles}}</h3>
-
-                <p>Vehículos</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-android-car"></i>
-              </div>
-              <a href="{{url_for('vehicles_bp.home')}}" class="small-box-footer">Ver <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-warning">
-              <div class="inner">
-                <h3>{{total_drivers}}</h3>
-
-                <p>Conductores registrados</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-person"></i>
-              </div>
-              <a href="{{url_for('drivers_bp.home')}}" class="small-box-footer">Ver <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-danger">
-              <div class="inner">
-                <h3>65</h3>
-
-                <p>Unique Visitors</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-pie-graph"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-        </div>
+        
         <!-- /.row -->
         <!-- Main row -->
         <div class="row">
           <!-- Left col -->
-          
+          <div class="col-md-5  col-sm-12">
+            <div class="card card-primary card-outline">
+                <div class="card-body box-profile">
+                  <div class="text-center">
+                    <img class="profile-user-img img-fluid img-circle" src="https://appsrv1-147a1.kxcdn.com/adminlte/img/user4-128x128.jpg" alt="User profile picture">
+                  </div>
+  
+                  <h3 class="profile-username text-center">
+                    {{driver.name}} {{driver.lastname}}
+                  </h3>
+  
+                  <p class="text-muted text-center">
+                    {{driver.dni}}
+                  </p>
+  
+                  <ul class="list-group list-group-unbordered mb-3">
+                    {%if driver.email != None%}
+                        <li class="list-group-item">
+                            <b>Email</b> <a class="float-right">{{driver.email}}</a>
+                        </li>
+                    {%endif%}
+                    <li class="list-group-item">
+                      <b>Teléfono</b> <a class="float-right">{{driver.phone}}</a>
+                    </li>
+                    <li class="list-group-item">
+                      <b>Dirección</b> <a class="float-right">{{driver.address  }}</a>
+                    </li>
+                  </ul>
+  
+                  <a href="{{url_for('drivers_bp.edit',id=driver.id)}}" class="btn btn-primary "><b>Editar</b></a>
+                </div>
+                <!-- /.card-body -->
+              </div>      
+          </div>
+
+          <div class="col-md-7    col-sm-12">
+            <div class="card card-primary ">
+                <div class="card-body box-profile">
+                    <div class="text-center">
+                        <h4>Vehículos asignados</h4>                    
+                    </div>                
+                    {%if driver.vehicles.count() > 0 %}                                            
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    <tr>
+                                    <th>Marca</th>
+                                    <th>Modelo</th>
+                                    <th>Color</th>
+                                    <th>Año</th>                                    
+                                    <th>Ver</th>                                    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {%for vehicle in driver.vehicles%}
+                                    <tr>
+                                        <td>{{vehicle.brand.name}}</td>
+                                        <td>{{vehicle.model}}</td>
+                                        <td>{{vehicle.color}}</td>
+                                        <td>{{vehicle.year}}</td>
+                                        <td><a href="{{url_for('vehicles_bp.detail',id=vehicle.id)}}"><i class="icon fas fa-eye"></i></a></td>
+                                        
+                                    </tr>
+                                    {%endfor%}                    
+                                </tbody>
+                            </table>
+                        </div>                    
+                    {%else%}
+                        <p class="text-muted text-center">
+                            No posee vehículos asignados
+                        </p>
+                    {%endif%}
+                                          
+                </div>
+                <!-- /.card-body -->
+              </div>            
+          </div>
          
           <!-- right col -->
         </div>
