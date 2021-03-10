@@ -40,13 +40,15 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Vehículos</h1>            
-            {% with messages = get_flashed_messages(with_categories=true)%}
+            <h1 class="m-0 text-dark">Detalles del tracker</h1>
+            
+            {% with messages = get_flashed_messages()%}
               {% if messages %}
-                {% for category,message in messages%}
-                  <div class="alert alert-{{category}} alert-dismissible">
-                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>                      
-                      {{message}}
+                {% for message in messages%}
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5><i class="icon fas fa-ban"></i> Error!</h5>
+                        {{message}}
                   </div>
                 {% endfor%}
               {% endif %}
@@ -66,56 +68,41 @@
         
         <!-- /.row -->
         <!-- Main row -->
-        
         <div class="row">
           <!-- Left col -->
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Listado de vehículos </h3>            
-                <a href="{{url_for('vehicles_bp.add')}}" class="btn btn-primary float-right "><b>Nuevo</b></a>            
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body table-responsive p-0">
-                <table class="table table-hover text-nowrap">
-                  <thead>
-                    <tr>
-                      <th>Placa</th>
-                      <th>Marca</th>
-                      <th>Modelo</th>
-                      <th>Color</th>
-                      <th>Año</th>                      
-                      <th>Conductor</th>
-                      <th>Foto</th>
-                      <th>Ver</th>
-                      
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for vehicle in vehicles%}
-                      <tr>
-                        <td>{{vehicle.plate}}</td>
-                        <td>{{vehicle.brand.name}}</td>
-                        <td>{{vehicle.model}}</td>
-                        <td>{{vehicle.color}}</td>
-                        <td>{{vehicle.year}}</td>                                                                                            
-                        <td>
-                          {% if vehicle.driver != None%}
-                          <a href="{{url_for('drivers_bp.profile',id=vehicle.driver.id)}}">{{vehicle.driver.name}} {{vehicle.driver.lastname}}</a>                            
-                          {% else %}
-                            <span class="right badge badge-danger">Sin asignar</span>
-                          {%endif%}
-                        </td>
-                        <td><img src="/static/uploads/vehicles/{{vehicle.photo}}" class="img-fluid" height=120 width=120/></td>
-                        <td><a href="{{url_for('vehicles_bp.detail',id=vehicle.id)}}"><i class="icon fas fa-eye"></i></a></td>                                    
-                      </tr>
-                    {%endfor%}                    
-                  </tbody>
-                </table>
-              </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
+          <div class="col-md-5   col-sm-12 ">
+            <div class="card card-primary card-outline">
+                <div class="card-body box-profile">
+                  <div class="text-center">
+                  
+                  </div>
+  
+                  
+                  <h3 class="profile-username text-center">                    
+                    {{tracker.imei}} / {{tracker.phone}}                                        
+                  </h3>
+  
+                  <p class="text-muted text-center">
+                    {%if tracker.vehicle != None%}
+                    Vehículo: <a href="{{url_for('vehicles_bp.detail',id=tracker.vehicle.id)}}">{{tracker.vehicle.brand.name}} {{tracker.vehicle.model}} {{tracker.vehicle.year}}</a>
+                    {%else%}
+                    Sin vehículo asignado
+                    {%endif%}                                        
+                  </p>
+
+                  <ul class="list-group list-group-unbordered mb-3">                    
+                        
+                    
+                  </ul>
+  
+                  <a href="{{url_for('trackers_bp.edit',id=tracker.id)}}" class="btn btn-primary "><b>Editar</b></a>
+                </div>
+                <!-- /.card-body -->
+              </div>      
+          </div>
+
+          <div class="col-7 ">
+            
           </div>
          
           <!-- right col -->

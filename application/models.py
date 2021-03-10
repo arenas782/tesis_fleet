@@ -90,6 +90,8 @@ class Vehicle(db.Model):
     brand = db.relationship('VehicleBrand')
     driver_id = db.Column(db.Integer, db.ForeignKey('drivers.id', ondelete='cascade'),nullable=True)
     driver = db.relationship('Driver')
+    
+    tracker = db.relationship("Tracker", backref="trackers", lazy='dynamic')
 
 class VehicleBrand(db.Model):
     __tablename__ = 'vehicles_brands'
@@ -120,6 +122,29 @@ class Driver(db.Model):
 
     #relations
     vehicles = db.relationship("Vehicle", lazy='dynamic')
+
+    #functions
+    def update(self):
+        db.session.commit()
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+
+class Tracker(db.Model):
+    __tablename__ = 'trackers'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer(), primary_key=True)
+    imei = db.Column(db.String(15), unique=True)
+    phone = db.Column(db.String(15))
+    
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
+
+    #relations
+    vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicles.id', ondelete='cascade'),nullable=True)
+    vehicle = db.relationship('Vehicle')
 
     #functions
     def update(self):

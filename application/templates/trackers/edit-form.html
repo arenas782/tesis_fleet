@@ -29,6 +29,9 @@
   <!-- summernote -->
   <link rel="stylesheet" href="/static/assets/plugins/summernote/summernote-bs4.min.css">
 
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+
 {% endblock stylesheets %}
 
 {% block content %}
@@ -40,13 +43,15 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Vehículos</h1>            
+            <h1 class="m-0 text-dark">Registro de tracker</h1>
+            
             {% with messages = get_flashed_messages(with_categories=true)%}
               {% if messages %}
                 {% for category,message in messages%}
-                  <div class="alert alert-{{category}} alert-dismissible">
-                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>                      
-                      {{message}}
+                    <div class="alert alert-{{category}} alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        
+                        {{message}}
                   </div>
                 {% endfor%}
               {% endif %}
@@ -66,56 +71,51 @@
         
         <!-- /.row -->
         <!-- Main row -->
-        
         <div class="row">
           <!-- Left col -->
-          <div class="col-12">
-            <div class="card">
+          <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Listado de vehículos </h3>            
-                <a href="{{url_for('vehicles_bp.add')}}" class="btn btn-primary float-right "><b>Nuevo</b></a>            
+                <h3 class="card-title">Datos del tracker</h3>
               </div>
               <!-- /.card-header -->
-              <div class="card-body table-responsive p-0">
-                <table class="table table-hover text-nowrap">
-                  <thead>
-                    <tr>
-                      <th>Placa</th>
-                      <th>Marca</th>
-                      <th>Modelo</th>
-                      <th>Color</th>
-                      <th>Año</th>                      
-                      <th>Conductor</th>
-                      <th>Foto</th>
-                      <th>Ver</th>
-                      
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for vehicle in vehicles%}
-                      <tr>
-                        <td>{{vehicle.plate}}</td>
-                        <td>{{vehicle.brand.name}}</td>
-                        <td>{{vehicle.model}}</td>
-                        <td>{{vehicle.color}}</td>
-                        <td>{{vehicle.year}}</td>                                                                                            
-                        <td>
-                          {% if vehicle.driver != None%}
-                          <a href="{{url_for('drivers_bp.profile',id=vehicle.driver.id)}}">{{vehicle.driver.name}} {{vehicle.driver.lastname}}</a>                            
-                          {% else %}
-                            <span class="right badge badge-danger">Sin asignar</span>
-                          {%endif%}
-                        </td>
-                        <td><img src="/static/uploads/vehicles/{{vehicle.photo}}" class="img-fluid" height=120 width=120/></td>
-                        <td><a href="{{url_for('vehicles_bp.detail',id=vehicle.id)}}"><i class="icon fas fa-eye"></i></a></td>                                    
-                      </tr>
-                    {%endfor%}                    
-                  </tbody>
-                </table>
-              </div>
-              <!-- /.card-body -->
+              <!-- form start -->
+              <form method="POST" >
+                <input type="hidden" name="tracker_id" value="{{tracker.id}}" required/>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="form-group col-md-4"> 
+                            <label for="exampleInputEmail1">IMEI</label>
+                            <input type="text" class="form-control" id="imei" name="imei" value="{{tracker.imei}}" placeholder="imei" required readonly>
+                          </div>                          
+                          <div class="form-group col-md-4" >
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Número de teléfono</label>
+                                <input type="text" class="form-control" id="phone" name="phone" placeholder="Teléfono" value="{{tracker.phone}}" required>
+                              </div>
+                          </div>
+                          <div class="form-group col-md-4">
+                            <label for="brands-select">Vehículo</label>
+                            <select  id="brand-select" name="vehicle_id" class="form-control select2 select2-hidden-accessible" style="width: 100%"  >
+                                <option></option>
+                                {%for vehicle in vehicles%}        
+                                    <option value="{{vehicle.id}}" {% if vehicle.id==tracker.vehicle_id%} selected="selected"{%endif%} >{{vehicle.brand.name}} {{vehicle.model}} {{vehicle.year}} </option>                                    
+                                {%endfor%}                                                  
+                              </select>
+                          </div>
+                    </div>                                        
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">Enviar</button>
+                </div>
+              </form>
             </div>
             <!-- /.card -->
+
+            
+
           </div>
          
           <!-- right col -->
@@ -139,6 +139,13 @@
   <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
   <script>
     $.widget.bridge('uibutton', $.ui.button)
+    $(document).ready(function() {
+        $('#brand-select').select2({
+            placeholder: "Seleccione un vehículo",
+            allowClear: true            
+        });
+        
+    });
   </script>
   <!-- Bootstrap 4 -->
   <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -164,5 +171,8 @@
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
   <!-- AdminLTE for demo purposes -->
   <script src="/static/assets/js/demo.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 
 {% endblock javascripts %}

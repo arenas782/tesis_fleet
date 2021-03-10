@@ -42,20 +42,17 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Conductores</h1>
-            
-            {% with messages = get_flashed_messages()%}
+            <h1 class="m-0 text-dark">Trackers</h1>            
+            {% with messages = get_flashed_messages(with_categories=true)%}
               {% if messages %}
-                {% for message in messages%}
-                    <div class="alert alert-danger alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <h5><i class="icon fas fa-ban"></i> Error!</h5>
-                        {{message}}
+                {% for category,message in messages%}
+                  <div class="alert alert-{{category}} alert-dismissible">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>                    
+                      {{message}}
                   </div>
                 {% endfor%}
               {% endif %}
-            {% endwith %}
-            
+            {% endwith %}            
           </div><!-- /.col -->
           
         </div><!-- /.row -->
@@ -75,8 +72,8 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Responsive Hover Table</h3>
-            
+                <h3 class="card-title">Listado de trackers en la plataforma</h3>
+                <a href="{{url_for('trackers_bp.add')}}" class="btn btn-primary float-right "><b>Nuevo</b></a>            
               </div>
               <!-- /.card-header -->
               <div class="card-body table-responsive p-0">
@@ -84,56 +81,35 @@
                   <thead>
                     <tr>
                       <th>ID</th>
-                      <th>User</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Reason</th>
+                      <th>IMEI</th>
+                      <th>Teléfono</th>
+                      <th>Vehículo</th>                      
+                      <th>Acciones</th>       
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>183</td>
-                      <td>John Doe</td>
-                      <td>11-7-2014</td>
-                      <td><span class="tag tag-success">Approved</span></td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
-                    <tr>
-                      <td>219</td>
-                      <td>Alexander Pierce</td>
-                      <td>11-7-2014</td>
-                      <td><span class="tag tag-warning">Pending</span></td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
-                    <tr>
-                      <td>657</td>
-                      <td>Bob Doe</td>
-                      <td>11-7-2014</td>
-                      <td><span class="tag tag-primary">Approved</span></td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
-                    <tr>
-                      <td>175</td>
-                      <td>Mike Doe</td>
-                      <td>11-7-2014</td>
-                      <td><span class="tag tag-danger">Denied</span></td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
+                    {%for tracker in trackers%}                      
+                      <tr>
+                        <td>{{tracker.id}}</td>
+                        <td>{{tracker.imei}}</td>
+                        <td>{{tracker.phone}}</td>
+                        <td>{% if tracker.vehicle != None %}<a href="{{url_for('vehicles_bp.detail',id=tracker.vehicle.id)}}"> {{tracker.vehicle.brand.name}} {{tracker.vehicle.model}} {{tracker.vehicle.year}}</a> {%else%}<span class="right badge badge-danger">Sin asignar</span>{%endif%}</td>                        
+                        <td><a href="{{url_for('trackers_bp.detail',id=tracker.id)}}"><i class="icon fas fa-eye"></i></a></td>                                    
+                      </tr>                      
+                    {%endfor%}                    
                   </tbody>
                 </table>
               </div>
               <!-- /.card-body -->
             </div>
             <!-- /.card -->
-          </div>
-         
+          </div>         
           <!-- right col -->
         </div>
         <!-- /.row (main row) -->
       </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
-
   </div>
 
 {% endblock content %}
