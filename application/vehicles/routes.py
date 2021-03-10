@@ -13,6 +13,17 @@ from flask_login import login_required, logout_user, current_user, login_user, l
 vehicles_bp = Blueprint(
     'vehicles_bp', __name__,url_prefix='/vehicles')
 
+@vehicles_bp.before_request
+@login_required
+def before_request():
+    for user_role in current_user.roles:
+        if (user_role.name=='admin' or user_role.name=='operator'):
+            pass
+        else:
+            flash('No está autorizado para acceder a esta sección')
+            return redirect(url_for('home_bp.dashboard'))    
+    pass     
+
 @vehicles_bp.route('/')
 @login_required
 def home():

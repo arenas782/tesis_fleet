@@ -3,7 +3,7 @@
     <!-- Brand Logo -->
     <a href="/" class="brand-link">
       <img src="/static/assets/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">Fleet CMS</span>
+      <span class="brand-text font-weight-light">UNEG Fleet</span>
     </a>
 
     <!-- Sidebar -->
@@ -14,7 +14,10 @@
           <img src="/static/assets/img/default-driver.png" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">{{ current_user.name }} {{current_user.lastname}}</a>
+          <a href="#" class="d-block" style="color:white">{{ current_user.name }} {{current_user.lastname}}</a>
+          {%for role in current_user.roles%}
+            <p class="muted-text" style="color:gray">{{role.name}}</p>
+          {%endfor%}
         </div>
       </div>
 
@@ -31,53 +34,60 @@
               <p>
                 Dashboard                
               </p>
-            </a>
+            </a>            
+          </li>
+          
+          
+          {% for role in current_user.roles%}
             
-          </li>
-          <li class="nav-item">
-            <a href="{{ url_for('vehicles_bp.home') }}" class="nav-link {% if 'vehicles' in segment %} active {% endif %}">
-              <i class="nav-icon fas fa-car"></i>
-              <p>
-                Vehículos                
-              </p>
-            </a>
-          </li>
-          <li class="nav-item has-treeview ">
-            <a href="{{ url_for('drivers_bp.home') }}" class="nav-link {% if 'drivers' in segment %} active {% endif %}">
-              <i class="nav-icon fas fa-user-friends"></i>
-              <p>
-                Conductores                
-              </p>
-            </a>
-            
-          </li>
-          <li class="nav-item has-treeview ">
-            <a href="{{ url_for('trackers_bp.home') }}" class="nav-link {% if 'trackers' in segment %} active {% endif %}">
-              <i class="nav-icon fas fa-location-arrow"></i>
-              <p>
-                Trackers
-                
-              </p>
-            </a>
-            
-          </li>
+            {%if 'admin'==role.name or 'hr' == role.name%}
+            <li class="nav-item has-treeview ">
+              <a href="{{ url_for('drivers_bp.home') }}" class="nav-link {% if 'drivers' in segment %} active {% endif %}">
+                <i class="nav-icon fas fa-user-friends"></i>
+                <p>
+                  Conductores                
+                </p>
+              </a>            
+            </li>
+            {%endif%}
+            {%if 'admin'==role.name or 'operator' == role.name%}
+            <li class="nav-item">
+              <a href="{{ url_for('vehicles_bp.home') }}" class="nav-link {% if 'vehicles' in segment %} active {% endif %}">
+                <i class="nav-icon fas fa-car"></i>
+                <p>
+                  Vehículos                
+                </p>
+              </a>
+            </li>
+            <li class="nav-item has-treeview ">
+              <a href="{{ url_for('trackers_bp.home') }}" class="nav-link {% if 'trackers' in segment %} active {% endif %}">
+                <i class="nav-icon fas fa-location-arrow"></i>
+                <p>
+                  Trackers                  
+                </p>
+              </a>              
+            </li>            
+            {%endif%}
+            {%if 'admin'==role.name%}
+              <li class="nav-item has-treeview {% if 'layout' in segment %} menu-open {% endif %}">
+                <a href="{{ url_for('users_bp.home') }}" class="nav-link {% if 'users' in segment %} active {% endif %}">
+                  <i class="nav-icon fas fa-user-circle"></i>
+                  <p>
+                    Usuarios              
+                  </p>
+                </a>        
+              </li>                    
+            {%endif%}
+          {%endfor%}                              
           <li class="nav-item has-treeview ">
             <a href="#" class="nav-link {% if 'ui-' in segment %} active {% endif %}">
               <i class="nav-icon fas fa-chart-bar"></i>
               <p>
                 Reportes            
               </p>
-            </a>
-            
+            </a>            
           </li>
-          <li class="nav-item has-treeview {% if 'layout' in segment %} menu-open {% endif %}">
-            <a href="{{ url_for('users_bp.home') }}" class="nav-link {% if 'users' in segment %} active {% endif %}">
-              <i class="nav-icon fas fa-user-circle"></i>
-              <p>
-                Usuarios              
-              </p>
-            </a>        
-          </li>                    
+          
           <li class="nav-item has-treeview {% if 'tables-' in segment %} menu-open {% endif %}">
             <a href="{{url_for('home_bp.logout')}}" class="nav-link {% if 'tables-' in segment %} active {% endif %}">
               <i class="nav-icon fas fa-table"></i>

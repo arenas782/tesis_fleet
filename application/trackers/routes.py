@@ -10,6 +10,17 @@ from flask_login import login_required, logout_user, current_user, login_user, l
 trackers_bp = Blueprint(
     'trackers_bp', __name__,url_prefix='/trackers')
 
+@trackers_bp.before_request
+@login_required
+def before_request():
+    for user_role in current_user.roles:
+        if (user_role.name=='admin' or user_role.name=='operator'):
+            pass
+        else:
+            flash('No está autorizado para acceder a esta sección')
+            return redirect(url_for('home_bp.dashboard'))    
+    pass     
+
 @trackers_bp.route('/')
 @login_required
 def home():

@@ -14,8 +14,22 @@ from flask_login import login_required, logout_user, current_user, login_user, l
 drivers_bp = Blueprint(
     'drivers_bp', __name__,url_prefix='/drivers')
 
+
+@drivers_bp.before_request
+@login_required
+def before_request():
+    for user_role in current_user.roles:
+        if (user_role.name=='admin' or user_role.name=='hr'):
+            pass
+        else:
+            flash('No está autorizado para acceder a esta sección')
+            return redirect(url_for('home_bp.dashboard'))    
+    pass 
+
+
 @drivers_bp.route('/')
 @login_required
+
 def home():
     drivers = Driver.query.all()
     return render_template(
