@@ -31,6 +31,9 @@
   <!-- summernote -->
   <link rel="stylesheet" href="/static/assets/plugins/summernote/summernote-bs4.min.css">
 
+  
+  </style>
+
 {% endblock stylesheets %}
 
 {% block content %}
@@ -93,8 +96,10 @@
                         <td>{{tracker.id}}</td>
                         <td>{{tracker.imei}}</td>
                         <td>{{tracker.phone}}</td>
-                        <td>{% if tracker.vehicle != None %}<a href="{{url_for('vehicles_bp.detail',id=tracker.vehicle.id)}}"> {{tracker.vehicle.brand.name}} {{tracker.vehicle.model}} {{tracker.vehicle.year}}</a> {%else%}<span class="right badge badge-danger">Sin asignar</span>{%endif%}</td>                        
-                        <td><a href="{{url_for('trackers_bp.detail',id=tracker.id)}}"><i class="icon fas fa-eye"></i></a></td>                                    
+                        <td>{% if tracker.vehicle != None %}<a  href="{{url_for('vehicles_bp.detail',id=tracker.vehicle.id)}}"> {{tracker.vehicle.brand.name}} {{tracker.vehicle.model}} {{tracker.vehicle.year}}</a> {%else%}<span class="right badge badge-danger">Sin asignar</span>{%endif%}</td>                        
+                        <td><a  href="{{url_for('trackers_bp.detail',id=tracker.id)}}"><i class="icon fas fa-eye"></i></a>
+                            <a  href="{{url_for('trackers_bp.edit',id=tracker.id)}}"><i class="icon fas fa-edit"></i></a>
+                        </td>                                    
                       </tr>                      
                     {%endfor%}                    
                   </tbody>
@@ -127,21 +132,17 @@
   </script>
   <!-- Bootstrap 4 -->
   <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <!-- ChartJS -->
-  <script src="/static/assets/plugins/chart.js/Chart.min.js"></script>
-  <!-- Sparkline -->
-  <!-- JQVMap -->
+  
   <script src="/static/assets/plugins/jqvmap/jquery.vmap.min.js"></script>
   <script src="/static/assets/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-  <!-- jQuery Knob Chart -->
-  <script src="/static/assets/plugins/jquery-knob/jquery.knob.min.js"></script>
+  
   <!-- daterangepicker -->
   <script src="/static/assets/plugins/moment/moment.min.js"></script>
   <script src="/static/assets/plugins/daterangepicker/daterangepicker.js"></script>
   <!-- Tempusdominus Bootstrap 4 -->
   <script src="/static/assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
   <!-- Summernote -->
-  <script src="/static/assets/plugins/summernote/summernote-bs4.min.js"></script>
+  
   <!-- overlayScrollbars -->
   <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
   <!-- AdminLTE App -->

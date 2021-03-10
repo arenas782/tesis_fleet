@@ -1,9 +1,11 @@
+import os
 from flask import Blueprint,render_template,redirect,url_for,request,flash
 from flask import current_app as app
 from .. import login_manager
+from werkzeug.utils import secure_filename
 from ..models import Driver,db,Vehicle
 from sqlalchemy import or_
-
+import uuid
 
 from ..utils import role_required   
 from flask_login import login_required, logout_user, current_user, login_user, logout_user
@@ -45,13 +47,23 @@ def add():
                             address=request.values.get('address'),
                             phone=request.values.get('phone'),
                             email=request.values.get('email'))
-            try:
-                newDriver.create()
-                flash('Nuevo conductor registrado','success')
-                return redirect(url_for('drivers_bp.home'))    
-            except:
-                flash('Ha ocurrido un error','danger')
-                return redirect(url_for('drivers_bp.home'))    
+            
+            file = request.files['photo']
+            if file:
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER']+'/drivers', filename))
+                newDriver.photo = filename            
+            if(request.values.get('vehicle_id')):            
+                vehicle = Vehicle.query.get(request.values.get('vehicle_id'))
+                newDriver.vehicles.append(vehicle)
+
+            
+            newDriver.create()
+            flash('Nuevo conductor registrado','success')
+            return redirect(url_for('drivers_bp.home'))    
+            #except:
+            #flash('Ha ocurrido un error','danger')
+            #return redirect(url_for('drivers_bp.home'))    
     else:                
         vehicles = Vehicle.query.filter_by(driver_id=None).all()
         return render_template(

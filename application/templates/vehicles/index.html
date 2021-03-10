@@ -106,8 +106,11 @@
                             <span class="right badge badge-danger">Sin asignar</span>
                           {%endif%}
                         </td>
-                        <td><img src="/static/uploads/vehicles/{{vehicle.photo}}" class="img-fluid" height=120 width=120/></td>
-                        <td><a href="{{url_for('vehicles_bp.detail',id=vehicle.id)}}"><i class="icon fas fa-eye"></i></a></td>                                    
+                        <td><img class=" img-fluid " src="{%if vehicle.photo is none%} /static/assets/img/default-car.png {%else%}/static/uploads/vehicles/{{vehicle.photo}} {%endif%}" alt="Vehicle picture" width=120></td>
+                        <td>
+                          <a href="{{url_for('vehicles_bp.detail',id=vehicle.id)}}"><i class="icon fas fa-eye"></i></a>
+                          <a href="{{url_for('vehicles_bp.edit',id=vehicle.id)}}"><i class="icon fas fa-edit"></i></a>
+                        </td>                                    
                       </tr>
                     {%endfor%}                    
                   </tbody>

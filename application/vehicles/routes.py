@@ -52,7 +52,7 @@ def add():
             file = request.files['photo']
             if file:
                 filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                file.save(os.path.join(app.config['UPLOAD_FOLDER']+'/vehicles', filename))
                 newVehicle.photo = filename
 
 

@@ -117,6 +117,7 @@ class Driver(db.Model):
     address = db.Column(db.String(200))
     email = db.Column(db.String(40))
     phone = db.Column(db.String(20))
+    photo = db.Column(db.String(200))
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
 

@@ -74,7 +74,7 @@
             <div class="card card-primary card-outline">
                 <div class="card-body box-profile">
                   <div class="text-center">
-                    <img class=" img-fluid " src="/static/uploads/vehicles/{{vehicle.photo}}" alt="User profile picture">
+                    <img class=" img-fluid " src="{%if vehicle.photo is none%} /static/assets/img/default-car.png {%else%}/static/uploads/vehicles/{{vehicle.photo}} {%endif%}" alt="User profile picture" width=300>
                   </div>
   
                   

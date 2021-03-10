@@ -87,7 +87,8 @@
                       <th>Nombres</th>
                       <th>Apellidos</th>
                       <th>Teléfono</th> 
-                      <th>Ver</th>    
+                      <th>Foto</th>
+                      <th>Acciones</th>    
                     </tr>
                   </thead>
                   <tbody>
@@ -97,7 +98,11 @@
                         <td>{{driver.name}}</td>
                         <td>{{driver.lastname}}</td>
                         <td>{{driver.phone}}</td>                                                      
-                        <td><a href="{{url_for('drivers_bp.profile',id=driver.id)}}"><i class="icon fas fa-eye"></i></a></td>                                    
+                        <td><img class=" img-fluid " src="{%if driver.photo is none%} /static/assets/img/default-driver.png {%else%}/static/uploads/drivers/{{driver.photo}} {%endif%}" alt="User profile picture" width=80></td>
+                        <td>
+                          <a href="{{url_for('drivers_bp.profile',id=driver.id)}}"><i class="icon fas fa-eye"></i></a>
+                          <a href="{{url_for('drivers_bp.edit',id=driver.id)}}"><i class="icon fas fa-edit"></i></a>
+                        </td>                                    
                       </tr>
                     {%endfor%}                    
                   </tbody>
