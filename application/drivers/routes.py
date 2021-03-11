@@ -19,7 +19,7 @@ drivers_bp = Blueprint(
 @login_required
 def before_request():
     for user_role in current_user.roles:
-        if (user_role.name=='admin' or user_role.name=='hr'):
+        if (user_role.name=='admin' or user_role.name=='personal'):
             pass
         else:
             flash('No está autorizado para acceder a esta sección')
@@ -28,8 +28,6 @@ def before_request():
 
 
 @drivers_bp.route('/')
-@login_required
-
 def home():
     drivers = Driver.query.all()
     return render_template(
@@ -40,7 +38,6 @@ def home():
     )
 
 @drivers_bp.route('/<id>')
-@login_required
 def profile(id):
     driver = Driver.query.get(id)
     return render_template(
@@ -52,7 +49,6 @@ def profile(id):
 
 
 @drivers_bp.route('add',methods=['GET','POST'])
-@login_required
 def add():
     if (request.method=='POST'):
             newDriver = Driver(dni=request.values.get('dni'),
@@ -88,7 +84,6 @@ def add():
         )   
 
 @drivers_bp.route('/edit/<id>',methods=['GET','POST'])
-@login_required
 def edit(id):
     if request.method=='POST' :               
         driver= Driver.query.get(request.values.get('driver_id'))
@@ -107,9 +102,7 @@ def edit(id):
         return redirect(url_for('drivers_bp.home'))    
     else:
         driver = Driver.query.get(id)
-        vehicles = Vehicle.query.filter(or_(Vehicle.driver_id==None, Vehicle.driver_id==id)).all()
-        
-        
+        vehicles = Vehicle.query.filter(or_(Vehicle.driver_id==None, Vehicle.driver_id==id)).all()            
         return render_template(
             'drivers/edit-form.html',            
             segment = 'drivers',    
@@ -117,6 +110,3 @@ def edit(id):
             vehicles = vehicles,
             current_user = current_user
         )   
-
-
-    

@@ -17,6 +17,15 @@ class User(UserMixin,db.Model):
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
     roles = db.relationship('Role', secondary='user_roles')
 
+    #functions
+    def update(self):
+        db.session.commit()
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+
+
    
     def set_password(self, password):
         """Create hashed password."""

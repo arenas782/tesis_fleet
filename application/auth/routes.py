@@ -33,8 +33,13 @@ def login():
                 return redirect(next_page or url_for('home_bp.dashboard'))
             flash('Credenciales inválidas')
             return redirect(url_for('auth_bp.login'))
-
     return render_template('login.html')
+
+@auth_bp.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('auth_bp.login'))
+    
     
 @login_manager.user_loader
 def load_user(user_id):

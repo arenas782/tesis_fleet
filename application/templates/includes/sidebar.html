@@ -40,7 +40,7 @@
           
           {% for role in current_user.roles%}
             
-            {%if 'admin'==role.name or 'hr' == role.name%}
+            {%if 'admin'==role.name or 'personal' == role.name%}
             <li class="nav-item has-treeview ">
               <a href="{{ url_for('drivers_bp.home') }}" class="nav-link {% if 'drivers' in segment %} active {% endif %}">
                 <i class="nav-icon fas fa-user-friends"></i>
@@ -50,7 +50,7 @@
               </a>            
             </li>
             {%endif%}
-            {%if 'admin'==role.name or 'operator' == role.name%}
+            {%if 'admin'==role.name or 'operador' == role.name%}
             <li class="nav-item">
               <a href="{{ url_for('vehicles_bp.home') }}" class="nav-link {% if 'vehicles' in segment %} active {% endif %}">
                 <i class="nav-icon fas fa-car"></i>
@@ -89,7 +89,7 @@
           </li>
           
           <li class="nav-item has-treeview {% if 'tables-' in segment %} menu-open {% endif %}">
-            <a href="{{url_for('home_bp.logout')}}" class="nav-link {% if 'tables-' in segment %} active {% endif %}">
+            <a href="{{url_for('auth_bp.logout')}}" class="nav-link {% if 'tables-' in segment %} active {% endif %}">
               <i class="nav-icon fas fa-table"></i>
               <p>
                 Logout                

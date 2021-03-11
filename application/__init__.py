@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,render_template
 from flask_sqlalchemy import SQLAlchemy
 from os import environ, path
 from dotenv import load_dotenv
@@ -11,12 +11,14 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 
 
+def page_not_found(e):
+    return render_template('404.html'), 404
+
 def init_app():
     """Initialize the core application."""
     app = Flask(__name__, instance_relative_config=True)
     UPLOAD_FOLDER = '/home/arenas/Escritorio/tesis/application/static/uploads'
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
     
     app.config.from_object('config.DevConfig')
     
@@ -39,4 +41,6 @@ def init_app():
         app.register_blueprint(vehicles.routes.vehicles_bp)    
         app.register_blueprint(users.routes.users_bp)    
         app.register_blueprint(trackers.routes.trackers_bp)    
+        
+        app.register_error_handler(404, page_not_found)
         return app

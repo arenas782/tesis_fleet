@@ -14,7 +14,7 @@ trackers_bp = Blueprint(
 @login_required
 def before_request():
     for user_role in current_user.roles:
-        if (user_role.name=='admin' or user_role.name=='operator'):
+        if (user_role.name=='admin' or user_role.name=='operador'):
             pass
         else:
             flash('No está autorizado para acceder a esta sección')
@@ -22,7 +22,6 @@ def before_request():
     pass     
 
 @trackers_bp.route('/')
-@login_required
 def home():
     trackers = Tracker.query.all()
     return render_template(
@@ -33,7 +32,6 @@ def home():
     )
 
 @trackers_bp.route('/<id>')
-@login_required
 def detail(id):
     tracker = Tracker.query.get(id)
     return render_template(
@@ -44,7 +42,6 @@ def detail(id):
     )
 
 @trackers_bp.route('/add',methods=['GET','POST'])
-@login_required
 def add():
     if request.method=='POST':
         newTracker = Tracker(imei=request.values.get('imei'),
@@ -69,7 +66,6 @@ def add():
         )
 
 @trackers_bp.route('/edit/<id>',methods=['GET','POST'])
-@login_required
 def edit(id):
     if request.method=='POST':
         tracker = Tracker.query.get(request.values.get('tracker_id'))

@@ -2,7 +2,7 @@
 
 {% extends "layouts/base.html" %}
 
-{% block title %} Trackers {% endblock %} 
+{% block title %} Página no encontrada {% endblock %} 
 
 <!-- Element injected in the BODY element -->
 {% block body_class %} sidebar-mini {% endblock body_class %} 
@@ -17,14 +17,12 @@
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   
-  <!-- iCheck -->
-  <link rel="stylesheet" href="/static/assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-  <!-- JQVMap -->
-  <link rel="stylesheet" href="/static/assets/plugins/jqvmap/jqvmap.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
   <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">  
+  
+  
+
 
 {% endblock stylesheets %}
 
@@ -37,7 +35,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Trackers</h1>            
+            <h1 class="m-0 text-dark">Error</h1>            
             {% with messages = get_flashed_messages(with_categories=true)%}
               {% if messages %}
                 {% for category,message in messages%}
@@ -64,38 +62,20 @@
         <!-- Main row -->
         <div class="row">
           <!-- Left col -->
-          <div class="col-12">
+          <div class="col-md-4 offset-md-4 col-sm-12">
             <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Listado de trackers en la plataforma</h3>
-                <a href="{{url_for('trackers_bp.add')}}" class="btn btn-primary float-right "><b>Nuevo</b></a>            
+              <div class="card-header d-flex justify-content-center p-4">
+                <h3 class="card-title">La página que estás buscando no existe</h3>                
               </div>
               <!-- /.card-header -->
-              <div class="card-body table-responsive p-0">
-                <table class="table table-hover text-nowrap">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>IMEI</th>
-                      <th>Teléfono</th>
-                      <th>Vehículo</th>                      
-                      <th>Acciones</th>       
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {%for tracker in trackers%}                      
-                      <tr>
-                        <td>{{tracker.id}}</td>
-                        <td>{{tracker.imei}}</td>
-                        <td>{{tracker.phone}}</td>
-                        <td>{% if tracker.vehicle != None %}<a  href="{{url_for('vehicles_bp.detail',id=tracker.vehicle.id)}}"> {{tracker.vehicle.brand.name}} {{tracker.vehicle.model}} {{tracker.vehicle.year}}</a> {%else%}<span class="right badge badge-danger">Sin asignar</span>{%endif%}</td>                        
-                        <td><a  href="{{url_for('trackers_bp.detail',id=tracker.id)}}"><i class="icon fas fa-eye"></i></a>
-                            <a  href="{{url_for('trackers_bp.edit',id=tracker.id)}}"><i class="icon fas fa-edit"></i></a>
-                        </td>                                    
-                      </tr>                      
-                    {%endfor%}                    
-                  </tbody>
-                </table>
+              <div class="card-body p-3  justify-content-center">
+                  Intenta nuevamente o ve al dashboard<br>
+                  <img src = "/static/assets/img/not-found.png" width="400"/>
+                <a href="{{url_for('home_bp.dashboard')}}" class="btn btn-primary"><b>Inicio</b></a>            
+
+                
+                  
+                
               </div>
               <!-- /.card-body -->
             </div>
@@ -124,15 +104,15 @@
   </script>
   <!-- Bootstrap 4 -->
   <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  
-  <script src="/static/assets/plugins/jqvmap/jquery.vmap.min.js"></script>
-  <script src="/static/assets/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-  
-
+    
+  <!-- daterangepicker -->
+  <script src="/static/assets/plugins/moment/moment.min.js"></script>
   
   <!-- overlayScrollbars -->
   <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
   <!-- AdminLTE App -->
-
+  <script src="/static/assets/js/adminlte.js"></script>
+  <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+  
 
 {% endblock javascripts %}
