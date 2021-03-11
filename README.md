@@ -1,8 +1,8 @@
 # UNEG Fleet
-#### _Proyecto de trabajo de grado para optar al título de Ingeniería Informática_
-_Desarrollado por:_
-José Arenas
-Jennifer Rondón
+#### _Proyecto de trabajo de grado para optar al título de Ingeniería Informática de la Universidad Nacional Experimental de Guayana_
+_Desarrollado por:_ <br>
+José Arenas <br>
+Jennifer Rondón <br>
 
 ## Features
 
@@ -17,7 +17,7 @@ Jennifer Rondón
 > El desarrollo de este proyecto surge de la necesidad de crear una plataforma 
 > que permita unificar el manejo de flotas vehiculares, así como también los
 > aspectos asociados al mantenimiento de los vehículos, los datos de los conductores
-> y el rastreo de los vehículos a través de dispositivos GPS
+> y el rastreo de los vehículos a través de dispositivos GPS <br>
 > Todo esto junto con un dashboard que permita revisar las métricas en tiempo real
 > de los aspectos más resaltantes de la gestión de la flota vehicular.
 
@@ -37,10 +37,10 @@ Entre las tecnologías utilizadas como apoyo para desarrollar este proyecto, est
 
 ## Instalación
 
-UNEG Fleet requiere:
-[Python 3.8](https://www.python.org/) para su ejecución
-[venv](https://packaging.python.org/key_projects/#venv) para la creación de un entorno virtual aislado
-[Pip](https://pypi.org/project/pip/) para instalar las dependencias
+UNEG Fleet requiere: <br>
+[Python 3.8](https://www.python.org/) para su ejecución <br>
+[venv](https://packaging.python.org/key_projects/#venv) para la creación de un entorno virtual aislado <br>
+[Pip](https://pypi.org/project/pip/) para instalar las dependencias <br>
 
 Instalación de dependencias e inicialización del servidor en modo desarrollo:
 
