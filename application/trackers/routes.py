@@ -17,7 +17,7 @@ def before_request():
         if (user_role.name=='admin' or user_role.name=='operador'):
             pass
         else:
-            flash('No está autorizado para acceder a esta sección')
+            flash('No está autorizado para acceder a esta sección','error')
             return redirect(url_for('home_bp.dashboard'))    
     pass     
 
@@ -31,13 +31,20 @@ def home():
         current_user=current_user,        
     )
 
-@trackers_bp.route('/<id>')
+@trackers_bp.route('/<int:id>')
 def detail(id):
     tracker = Tracker.query.get(id)
+    if tracker:
+        return render_template(
+            'trackers/detail.html',        
+            segment = 'trackers',
+            tracker = tracker,
+            current_user=current_user,        
+        )
     return render_template(
-        'trackers/detail.html',        
+        'trackers/index.html',        
         segment = 'trackers',
-        tracker = tracker,
+     
         current_user=current_user,        
     )
 

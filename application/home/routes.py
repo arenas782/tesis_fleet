@@ -17,7 +17,7 @@ def before_request():
         if (user_role.name=='admin' or user_role.name=='personal' or user_role.name=='taller' or user_role.name=='operador'  ):
             pass
         else:
-            flash('No está autorizado para acceder a esta sección')
+            flash('No está autorizado para acceder a esta sección','error')
             return redirect(url_for('home_bp.dashboard'))    
     pass 
 

@@ -26,6 +26,7 @@ def init_app():
     db.init_app(app)
     login_manager.init_app(app)
     
+    app.register_error_handler(404, page_not_found)
 
     with app.app_context():
         # Include our Routes
@@ -42,5 +43,4 @@ def init_app():
         app.register_blueprint(users.routes.users_bp)    
         app.register_blueprint(trackers.routes.trackers_bp)    
         
-        app.register_error_handler(404, page_not_found)
         return app

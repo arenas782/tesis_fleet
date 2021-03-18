@@ -103,7 +103,7 @@
                                   <tr>
                                     <td>{{command.id}}</td>                                    
                                     <td>{{command.commands.description}}</td>
-                                    <td>{{command.status}}</td>
+                                    <td><span class="right badge badge-{%if command.status=='pending'%}warning{%else%}success{%endif%}">{{command.status}}</span></td>
                                     <td>{{command.created_at.strftime('%d/%m/%Y %H:%M:%S')}}</td>
                                     <td>{{command.updated_at.strftime('%d/%m/%Y %H:%M:%S')}}</td>
                                   </tr>                      

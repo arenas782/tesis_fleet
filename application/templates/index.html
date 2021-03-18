@@ -15,6 +15,7 @@
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   
+  <link rel="stylesheet" href="/static/assets/plugins/sweetalert2/sweetalert2.min.css">
   
   <!-- Theme style -->
   <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
@@ -34,17 +35,7 @@
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 class="m-0 text-dark">Dashboard</h1>            
-            {% with messages = get_flashed_messages()%}
-              {% if messages %}
-                {% for message in messages%}
-                    <div class="alert alert-danger alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <h5><i class="icon fas fa-ban"></i> Error!</h5>
-                        {{message}}
-                  </div>
-                {% endfor%}
-              {% endif %}
-            {% endwith %}
+            
             
           </div><!-- /.col -->
           <div class="col-sm-6">
@@ -155,7 +146,22 @@
   <!-- Bootstrap 4 -->
   <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
   <!-- ChartJS -->
-    
+  <script src="/static/assets/plugins/sweetalert2/sweetalert2.min.js"></script>
+  <script src="/static/assets/js/utils.js"></script>
+
+  {% with messages = get_flashed_messages(with_categories=true)%}
+    {% if messages %}
+      {% for category,message in messages%}
+        <script>
+          Toast.fire({
+            icon: '{{category}}',
+            title: '{{message}}'
+            })
+        </script>                  
+      {% endfor%}
+    {% endif %}
+  {% endwith %}  
+
   <!-- daterangepicker -->
   
   <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>

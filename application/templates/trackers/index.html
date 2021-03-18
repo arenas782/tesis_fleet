@@ -118,17 +118,17 @@
   <script src="/static/assets/js/utils.js"></script>
 
   {% with messages = get_flashed_messages(with_categories=true)%}
-              {% if messages %}
-                {% for category,message in messages%}
-                <script>
-                  Toast.fire({
-                    icon: '{{category}}',
-                    title: '{{message}}'
-                    })
-                </script>                  
-                {% endfor%}
-              {% endif %}
-            {% endwith %}  
+    {% if messages %}
+      {% for category,message in messages%}
+        <script>
+          Toast.fire({
+            icon: '{{category}}',
+            title: '{{message}}'
+            })
+        </script>                  
+      {% endfor%}
+    {% endif %}
+  {% endwith %}  
 
 
   <!-- Bootstrap 4 -->

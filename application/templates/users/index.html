@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/sweetalert2/sweetalert2.min.css">
   
     <!-- Theme style -->
   <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
@@ -33,18 +34,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Usuarios</h1>            
-            {% with messages = get_flashed_messages(with_categories=true)%}
-              {% if messages %} 
-                {% for category,message in messages%}
-                  <div class="alert alert-{{category}} alert-dismissible">
-                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>                      
-                      {{message}}
-                  </div>
-                {% endfor%}
-              {% endif %}
-            {% endwith %}
-            
+            <h1 class="m-0 text-dark">Usuarios</h1>                        
           </div><!-- /.col -->
           
         </div><!-- /.row -->
@@ -122,6 +112,23 @@
   <!-- jQuery UI 1.11.4 -->
   <script src="/static/assets/plugins/jquery-ui/jquery-ui.min.js"></script>
   <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+
+  <script src="/static/assets/plugins/sweetalert2/sweetalert2.min.js"></script>
+  <script src="/static/assets/js/utils.js"></script>
+
+  {% with messages = get_flashed_messages(with_categories=true)%}
+    {% if messages %}
+      {% for category,message in messages%}
+        <script>
+          Toast.fire({
+            icon: '{{category}}',
+            title: '{{message}}'
+            })
+        </script>                  
+      {% endfor%}
+    {% endif %}
+  {% endwith %}  
+
   <script>
     $.widget.bridge('uibutton', $.ui.button)
   </script>

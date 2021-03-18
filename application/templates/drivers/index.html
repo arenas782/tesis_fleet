@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/sweetalert2/sweetalert2.min.css">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Theme style -->
@@ -32,16 +33,7 @@
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 class="m-0 text-dark">Conductores</h1>            
-            {% with messages = get_flashed_messages(with_categories=true)%}
-              {% if messages %} 
-                {% for category,message in messages%}
-                  <div class="alert alert-{{category}} alert-dismissible">
-                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>                      
-                      {{message}}
-                  </div>
-                {% endfor%}
-              {% endif %}
-            {% endwith %}            
+            
           </div><!-- /.col -->
           
         </div><!-- /.row -->
@@ -129,11 +121,22 @@
   <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
   <!-- ChartJS -->
   
-  
-  
-  <!-- jQuery Knob Chart -->
-  <!-- daterangepicker -->
-  
+  <script src="/static/assets/plugins/sweetalert2/sweetalert2.min.js"></script>
+  <script src="/static/assets/js/utils.js"></script>
+
+  {% with messages = get_flashed_messages(with_categories=true)%}
+    {% if messages %}
+      {% for category,message in messages%}
+        <script>
+          Toast.fire({
+            icon: '{{category}}',
+            title: '{{message}}'
+            })
+        </script>                  
+      {% endfor%}
+    {% endif %}
+  {% endwith %}  
+
   <!-- overlayScrollbars -->
   <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
   <!-- AdminLTE App -->

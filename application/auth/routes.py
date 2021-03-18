@@ -24,14 +24,14 @@ def login():
         
         user = User.query.filter_by(email=form_email).first()
         if user is None:
-            flash('Usuario no encontrado')
+            flash('Usuario no encontrado','error')
             return render_template('login.html')    
         else:
             if user and user.check_password(form_password):
                 login_user(user)
                 next_page = request.args.get('next')
                 return redirect(next_page or url_for('home_bp.dashboard'))
-            flash('Credenciales inválidas')
+            flash('Credenciales inválidas','error')
             return redirect(url_for('auth_bp.login'))
     return render_template('login.html')
 
@@ -52,5 +52,5 @@ def load_user(user_id):
 @login_manager.unauthorized_handler
 def unauthorized():
     """Redirect unauthorized users to Login page."""
-    flash('Debe iniciar sesión para continuar')
+    flash('Debe iniciar sesión para continuar','error')
     return redirect(url_for('auth_bp.login'))
