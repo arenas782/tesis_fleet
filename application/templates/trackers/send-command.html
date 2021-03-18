@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Registro de trackers {% endblock %} 
+{% block title %} Envío de comandos {% endblock %} 
 
 <!-- Element injected in the BODY element -->
 {% block body_class %} sidebar-mini {% endblock body_class %} 
@@ -22,6 +22,7 @@
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
 
+  <link rel="stylesheet" href="/static/assets/plugins/sweetalert2/sweetalert2.min.css">
 
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
@@ -37,19 +38,8 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Registro de tracker</h1>
+            <h1 class="m-0 text-dark">Comandos del tracker</h1>
             
-            {% with messages = get_flashed_messages(with_categories=true)%}
-              {% if messages %}
-                {% for category,message in messages%}
-                    <div class="alert alert-{{category}} alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        
-                        {{message}}
-                  </div>
-                {% endfor%}
-              {% endif %}
-            {% endwith %}
             
           </div><!-- /.col -->
           
@@ -71,50 +61,61 @@
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Datos del tracker</h3>
+                <h3 class="card-title">Enviar comando</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form method="POST" >
+              <form method="POST" class="form-inline">
+                  <input type="hidden" name="tracker_id" value="{{tracker.id}}">
                 <div class="card-body">
                     <div class="row">
-                        <div class="form-group col-md-4"> 
-                            <label for="exampleInputEmail1">IMEI</label>
-                            <input type="text" class="form-control" id="imei" name="imei" placeholder="imei" required>
-                          </div>                          
-                          <div class="form-group col-md-4" >
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Número de teléfono</label>
-                                <input type="text" class="form-control" id="phone" name="phone" placeholder="Teléfono" required>
-                              </div>
-                          </div>
-                          <div class="form-group col-md-4">
-                            <label for="brands-select">Protocolo</label>
-                            <select  id="protocol-select" name="tracker_protocol_id" class="form-control select2 select2-hidden-accessible" style="width: 100%"  required>
+                        <div class="form-group col-md-4 ">
+                            
+                            <label for="command-select">Comando</label>
+                            
+                            <select  id="command-select" name="tracker_command_id" class="form-control select2 select2-hidden-accessible" style="width: 100%"  required>
                                 <option></option>
-                                {%for protocol in trackers_protocols%}        
-                                    <option value="{{protocol.id}}">{{protocol.name}}  </option>
+                                {%for command in commands%}        
+                                    <option value="{{command.id}}">{{command.description}} </option>
                                 {%endfor%}                                                  
-                              </select>
+                            </select>                            
+                        </div>                                                                                                      
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary ">Enviar</button>                                         
+                        </div>
+                    
+                    </div>  
+                    <div class="row">                      
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                              <thead>
+                                <tr>
+                                  <th>ID</th>
+                                  <th>Comando</th>
+                                  <th>Status</th>
+                                  <th>Enviado</th>
+                                  <th>Actualizado</th>                      
+                                  
+                                </tr>
+                              </thead>
+                              <tbody>                                        
+                                {%for command in commands_history%}                      
+                                  <tr>
+                                    <td>{{command.id}}</td>                                    
+                                    <td>{{command.commands.description}}</td>
+                                    <td>{{command.status}}</td>
+                                    <td>{{command.created_at.strftime('%d/%m/%Y %H:%M:%S')}}</td>
+                                    <td>{{command.updated_at.strftime('%d/%m/%Y %H:%M:%S')}}</td>
+                                  </tr>                      
+                                {%endfor%}                    
+                              </tbody>
+                              
+                            </table>
                           </div>
-                          
-                    </div>                                        
-                    <div class="row">
-                      <div class="form-group col-md-4">
-                        <label for="brands-select">Vehículo</label>
-                        <select  id="vehicle-select" name="vehicle_id" class="form-control select2 select2-hidden-accessible" style="width: 100%"  required>
-                            <option></option>
-                            {%for vehicle in vehicles%}        
-                                <option value="{{vehicle.id}}">{{vehicle.brand.name}} {{vehicle.model}} {{vehicle.year}} </option>
-                            {%endfor%}                                                  
-                          </select>
-                      </div>
                     </div>
                 </div>
                 <!-- /.card-body -->
-                <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Enviar</button>
-                </div>
+                
               </form>
             </div>
             <!-- /.card -->
@@ -143,17 +144,31 @@
   <script src="/static/assets/plugins/jquery-ui/jquery-ui.min.js"></script>
   <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 
+  <script src="/static/assets/plugins/sweetalert2/sweetalert2.min.js"></script>
+  <script src="/static/assets/js/utils.js"></script>
+
+  {% with messages = get_flashed_messages(with_categories=true)%}
+              {% if messages %}
+                {% for category,message in messages%}
+                <script>
+                  Toast.fire({
+                    icon: '{{category}}',
+                    title: '{{message}}'
+                    })
+                </script>                  
+                {% endfor%}
+              {% endif %}
+            {% endwith %}  
+
+
   <script>
     $.widget.bridge('uibutton', $.ui.button)
     $(document).ready(function() {
-        $('#vehicle-select').select2({
-            placeholder: "Seleccione un vehículo",
+        $('#command-select').select2({
+            placeholder: "Seleccione un comando",
             allowClear: true            
         });
-        $('#protocol-select').select2({
-            placeholder: "Seleccione un protocolo",
-            allowClear: true            
-        });
+        
         
     });
   </script>

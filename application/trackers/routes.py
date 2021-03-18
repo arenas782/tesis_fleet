@@ -1,7 +1,7 @@
 from flask import Blueprint,render_template,redirect,url_for,request,flash
 from flask import current_app as app
 from .. import login_manager
-from ..models import Tracker,Vehicle,db
+from ..models import Tracker,Vehicle,db,TrackerProtocol,TrackerCommand,TrackerCommandHistory
 from ..utils import role_required   
 from sqlalchemy import and_,or_
 from flask_login import login_required, logout_user, current_user, login_user, logout_user
@@ -41,12 +41,48 @@ def detail(id):
         current_user=current_user,        
     )
 
+@trackers_bp.route('/delete/<id>')
+def delete(id):
+    tracker = Tracker.query.get(id)
+    tracker.delete()
+    flash('Tracker eliminado','success')
+    return redirect(url_for('trackers_bp.home'))            
+
+@trackers_bp.route('/commands/<id>',methods=['GET','POST'])
+def commands(id):
+    if request.method=='POST':
+        newCommand = TrackerCommandHistory(tracker_id=request.values.get('tracker_id'),
+                                            tracker_command_id=request.values.get('tracker_command_id'),
+                                            status='pending')
+        try:
+            newCommand.create()
+            flash('Comando registrado','success')            
+        except:
+            flash('Ha ocurrido un error','danger')        
+        return redirect(url_for('trackers_bp.commands',id=id))     
+        
+    else:
+
+        tracker = Tracker.query.get(id)
+        protocol = TrackerProtocol.query.get(tracker.protocol.id)
+        commands = TrackerCommand.query.filter(Tracker.tracker_protocol_id==protocol.id)
+        commands_history = TrackerCommandHistory.query.filter(TrackerCommandHistory.tracker_id==id)
+        return render_template(
+                'trackers/send-command.html',        
+                segment = 'trackers',
+                commands = commands,        
+                tracker = tracker,    
+                current_user=current_user,        
+                commands_history = commands_history
+            )
+
 @trackers_bp.route('/add',methods=['GET','POST'])
 def add():
     if request.method=='POST':
         newTracker = Tracker(imei=request.values.get('imei'),
                             phone=request.values.get('phone'),
-                            vehicle_id=request.values.get('vehicle_id') or None)
+                            vehicle_id=request.values.get('vehicle_id') or None,
+                            tracker_protocol_id=request.values.get('tracker_protocol_id'))
         try:
             newTracker.create()
             flash('Nuevo tracker registrado','success')
@@ -58,10 +94,12 @@ def add():
         #ignoring the vehicles already asociated to a tracker
         ignore_ids =Tracker.query.with_entities(Tracker.vehicle_id).filter(Tracker.vehicle_id.isnot(None))        
         vehicles = Vehicle.query.filter(Vehicle.id.notin_(ignore_ids))        
+        trackers_protocols = TrackerProtocol.query.all()
         return render_template(
             'trackers/add-form.html',        
             segment = 'trackers',
             vehicles = vehicles,
+            trackers_protocols = trackers_protocols,
             current_user=current_user,        
         )
 

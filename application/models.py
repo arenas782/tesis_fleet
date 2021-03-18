@@ -141,6 +141,7 @@ class Driver(db.Model):
         db.session.add(self)
         db.session.commit()
 
+
 class Tracker(db.Model):
     __tablename__ = 'trackers'
     __table_args__ = {'extend_existing': True}
@@ -156,6 +157,106 @@ class Tracker(db.Model):
     vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicles.id', ondelete='cascade'),nullable=True)
     vehicle = db.relationship('Vehicle')
 
+    tracker_protocol_id = db.Column(db.Integer, db.ForeignKey('trackers_protocols.id', ondelete='cascade'),nullable=True)
+    protocol = db.relationship('TrackerProtocol')
+
+    #functions
+    def update(self):
+        db.session.commit()
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
+
+class Driver(db.Model):
+    __tablename__ = 'drivers'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer(), primary_key=True)
+    dni = db.Column(db.String(15), unique=True)
+    name = db.Column(db.String(40))
+    lastname = db.Column(db.String(40))
+    address = db.Column(db.String(200))
+    email = db.Column(db.String(40))
+    phone = db.Column(db.String(20))
+    photo = db.Column(db.String(200))
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
+
+    #relations
+    vehicles = db.relationship("Vehicle", lazy='dynamic')
+
+    #functions
+    def update(self):
+        db.session.commit()
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+
+class TrackerProtocol(db.Model):
+    __tablename__ = 'trackers_protocols'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(20), unique=True)
+    
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    
+    #relations
+
+    #functions
+    def update(self):
+        db.session.commit()
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+
+class TrackerCommand(db.Model):
+    __tablename__ = 'trackers_commands'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer(), primary_key=True)
+    command = db.Column(db.String(150))
+    description = db.Column(db.String(30))    
+    
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    
+    #relations
+    tracker_protocol_id = db.Column(db.Integer, db.ForeignKey('trackers_protocols.id', ondelete='cascade'),nullable=True)
+    protocol = db.relationship('TrackerProtocol')
+    #functions
+    def update(self):
+        db.session.commit()
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+
+
+class TrackerCommandHistory(db.Model):
+    __tablename__ = 'trackers_commands_history'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer(), primary_key=True)
+    status = db.Column(db.String(20),nullable=True)
+    
+    
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
+
+    #relations
+    tracker_id = db.Column(db.Integer, db.ForeignKey('trackers.id', ondelete='cascade'),nullable=True)
+    tracker_command_id = db.Column(db.Integer, db.ForeignKey('trackers_commands.id', ondelete='cascade'),nullable=True)
+    tracker = db.relationship('Tracker')
+    commands = db.relationship('TrackerCommand')
     #functions
     def update(self):
         db.session.commit()

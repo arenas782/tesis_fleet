@@ -17,10 +17,8 @@
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   
-  <!-- iCheck -->
-  <link rel="stylesheet" href="/static/assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-  <!-- JQVMap -->
-  <link rel="stylesheet" href="/static/assets/plugins/jqvmap/jqvmap.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/sweetalert2/sweetalert2.min.css">
+
   <!-- Theme style -->
   <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
   <!-- overlayScrollbars -->
@@ -37,17 +35,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Trackers</h1>            
-            {% with messages = get_flashed_messages(with_categories=true)%}
-              {% if messages %}
-                {% for category,message in messages%}
-                  <div class="alert alert-{{category}} alert-dismissible">
-                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>                    
-                      {{message}}
-                  </div>
-                {% endfor%}
-              {% endif %}
-            {% endwith %}            
+            <h1 class="m-0 text-dark">Trackers</h1>                        
           </div><!-- /.col -->
           
         </div><!-- /.row -->
@@ -78,23 +66,27 @@
                       <th>ID</th>
                       <th>IMEI</th>
                       <th>Teléfono</th>
+                      <th>Protocolo</th>
                       <th>Vehículo</th>                      
                       <th>Acciones</th>       
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody>                                        
                     {%for tracker in trackers%}                      
                       <tr>
                         <td>{{tracker.id}}</td>
                         <td>{{tracker.imei}}</td>
                         <td>{{tracker.phone}}</td>
+                        <td>{{tracker.protocol.name}}</td>
                         <td>{% if tracker.vehicle != None %}<a  href="{{url_for('vehicles_bp.detail',id=tracker.vehicle.id)}}"> {{tracker.vehicle.brand.name}} {{tracker.vehicle.model}} {{tracker.vehicle.year}}</a> {%else%}<span class="right badge badge-danger">Sin asignar</span>{%endif%}</td>                        
                         <td><a  href="{{url_for('trackers_bp.detail',id=tracker.id)}}"><i class="icon fas fa-eye"></i></a>
                             <a  href="{{url_for('trackers_bp.edit',id=tracker.id)}}"><i class="icon fas fa-edit"></i></a>
+                            <a onclick="confirmation(event)" href="{{url_for('trackers_bp.delete',id=tracker.id)}}"><i class="icon fas fa-trash"></i></a>
                         </td>                                    
                       </tr>                      
                     {%endfor%}                    
                   </tbody>
+                  
                 </table>
               </div>
               <!-- /.card-body -->
@@ -119,14 +111,29 @@
   <!-- jQuery UI 1.11.4 -->
   <script src="/static/assets/plugins/jquery-ui/jquery-ui.min.js"></script>
   <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-  <script>
-    $.widget.bridge('uibutton', $.ui.button)
-  </script>
+  
+  
+
+  <script src="/static/assets/plugins/sweetalert2/sweetalert2.min.js"></script>
+  <script src="/static/assets/js/utils.js"></script>
+
+  {% with messages = get_flashed_messages(with_categories=true)%}
+              {% if messages %}
+                {% for category,message in messages%}
+                <script>
+                  Toast.fire({
+                    icon: '{{category}}',
+                    title: '{{message}}'
+                    })
+                </script>                  
+                {% endfor%}
+              {% endif %}
+            {% endwith %}  
+
+
   <!-- Bootstrap 4 -->
   <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
   
-  <script src="/static/assets/plugins/jqvmap/jquery.vmap.min.js"></script>
-  <script src="/static/assets/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
   
 
   
