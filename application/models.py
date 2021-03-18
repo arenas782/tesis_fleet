@@ -2,7 +2,24 @@ from flask_login import UserMixin
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
-class User(UserMixin,db.Model):
+class Base(db.Model):
+    __abstract__ = True
+    #functions
+    def update(self):
+        db.session.commit()
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
+
+class User(UserMixin,Base):
     __tablename__ = 'users'
     __table_args__ = {'extend_existing': True}
 
@@ -16,16 +33,7 @@ class User(UserMixin,db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
     roles = db.relationship('Role', secondary='user_roles')
-
-    #functions
-    def update(self):
-        db.session.commit()
-
-    def create(self):
-        db.session.add(self)
-        db.session.commit()
-
-
+    
    
     def set_password(self, password):
         """Create hashed password."""
@@ -42,7 +50,7 @@ class User(UserMixin,db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
-class Role(db.Model):
+class Role(Base):
     __tablename__ = 'roles'
     __table_args__ = {'extend_existing': True}
 
@@ -50,7 +58,7 @@ class Role(db.Model):
     name = db.Column(db.String(20), unique=True)
     users = db.relationship('User', secondary='user_roles')
 
-class UserRoles(db.Model):
+class UserRoles(Base):
     __tablename__ = 'user_roles'
     __table_args__ = {'extend_existing': True}
 
@@ -65,7 +73,7 @@ class UserRoles(db.Model):
         db.ForeignKey('roles.id'),     
     )
 
-class DriversVehicles(db.Model):
+class DriversVehicles(Base):
     __tablename__ = 'drivers_vehicles'
     __table_args__ = {'extend_existing': True}
 
@@ -81,7 +89,7 @@ class DriversVehicles(db.Model):
     )
 
 
-class Vehicle(db.Model):
+class Vehicle(Base):
     __tablename__ = 'vehicles'
     __table_args__ = {'extend_existing': True}
 
@@ -102,7 +110,7 @@ class Vehicle(db.Model):
     
     tracker = db.relationship("Tracker", backref="trackers", lazy='dynamic')
 
-class VehicleBrand(db.Model):
+class VehicleBrand(Base):
     __tablename__ = 'vehicles_brands'
     __table_args__ = {'extend_existing': True}
 
@@ -115,7 +123,7 @@ class VehicleBrand(db.Model):
     
     
     
-class Driver(db.Model):
+class Driver(Base):
     __tablename__ = 'drivers'
     __table_args__ = {'extend_existing': True}
 
@@ -133,16 +141,10 @@ class Driver(db.Model):
     #relations
     vehicles = db.relationship("Vehicle", lazy='dynamic')
 
-    #functions
-    def update(self):
-        db.session.commit()
-
-    def create(self):
-        db.session.add(self)
-        db.session.commit()
 
 
-class Tracker(db.Model):
+
+class Tracker(Base):
     __tablename__ = 'trackers'
     __table_args__ = {'extend_existing': True}
 
@@ -160,21 +162,11 @@ class Tracker(db.Model):
     tracker_protocol_id = db.Column(db.Integer, db.ForeignKey('trackers_protocols.id', ondelete='cascade'),nullable=True)
     protocol = db.relationship('TrackerProtocol')
 
-    #functions
-    def update(self):
-        db.session.commit()
-
-    def create(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
 
 
 
-class Driver(db.Model):
+
+class Driver(Base):
     __tablename__ = 'drivers'
     __table_args__ = {'extend_existing': True}
 
@@ -192,15 +184,9 @@ class Driver(db.Model):
     #relations
     vehicles = db.relationship("Vehicle", lazy='dynamic')
 
-    #functions
-    def update(self):
-        db.session.commit()
+    
 
-    def create(self):
-        db.session.add(self)
-        db.session.commit()
-
-class TrackerProtocol(db.Model):
+class TrackerProtocol(Base):
     __tablename__ = 'trackers_protocols'
     __table_args__ = {'extend_existing': True}
 
@@ -209,17 +195,9 @@ class TrackerProtocol(db.Model):
     
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     
-    #relations
-
-    #functions
-    def update(self):
-        db.session.commit()
-
-    def create(self):
-        db.session.add(self)
-        db.session.commit()
-
-class TrackerCommand(db.Model):
+    
+    
+class TrackerCommand(Base):
     __tablename__ = 'trackers_commands'
     __table_args__ = {'extend_existing': True}
 
@@ -232,16 +210,10 @@ class TrackerCommand(db.Model):
     #relations
     tracker_protocol_id = db.Column(db.Integer, db.ForeignKey('trackers_protocols.id', ondelete='cascade'),nullable=True)
     protocol = db.relationship('TrackerProtocol')
-    #functions
-    def update(self):
-        db.session.commit()
-
-    def create(self):
-        db.session.add(self)
-        db.session.commit()
+    
 
 
-class TrackerCommandHistory(db.Model):
+class TrackerCommandHistory(Base):
     __tablename__ = 'trackers_commands_history'
     __table_args__ = {'extend_existing': True}
 
@@ -257,10 +229,3 @@ class TrackerCommandHistory(db.Model):
     tracker_command_id = db.Column(db.Integer, db.ForeignKey('trackers_commands.id', ondelete='cascade'),nullable=True)
     tracker = db.relationship('Tracker')
     commands = db.relationship('TrackerCommand')
-    #functions
-    def update(self):
-        db.session.commit()
-
-    def create(self):
-        db.session.add(self)
-        db.session.commit()
