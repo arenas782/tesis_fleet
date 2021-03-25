@@ -220,4 +220,37 @@ class TrackerLog(Base):
     #relations
     tracker_id = db.Column(db.Integer, db.ForeignKey('trackers.id', ondelete='cascade'),nullable=True)
     tracker = db.relationship('Tracker')
+
+
+    
+class Maintenance(Base):
+    __tablename__ = 'maintenance_vehicles'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer(), primary_key=True)    
+    status = db.Column(db.Numeric(10,6),nullable=True,default="Pendiente")
+    comment = db.Column(db.Numeric(10,6),nullable=True)
+    maintenance_type = db.Column(db.String(15))
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
+
+    
+    #relations
+    vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicles.id', ondelete='cascade'),nullable=True)
+    vehicle = db.relationship('Vehicle')
+
+    comments = db.relationship('MaintenanceComment')
+    
+
+class MaintenanceComment(Base):
+    __tablename__ = 'maintenance_comments'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer(), primary_key=True)        
+    comment = db.Column(db.Numeric(10,6),nullable=True)    
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    
+    #relations
+    maintenance_id = db.Column(db.Integer, db.ForeignKey('maintenance_vehicles.id', ondelete='cascade'))
+    maintenance = db.relationship('Maintenance')
     

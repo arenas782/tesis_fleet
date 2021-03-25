@@ -37,11 +37,13 @@ def init_app():
         from .vehicles import routes
         from .trackers import routes
         from .users import routes
+        from .maintenance import routes
         app.register_blueprint(auth.routes.auth_bp)
         app.register_blueprint(drivers.routes.drivers_bp)
         app.register_blueprint(home.routes.home_bp)    
         app.register_blueprint(vehicles.routes.vehicles_bp)    
         app.register_blueprint(users.routes.users_bp)    
         app.register_blueprint(trackers.routes.trackers_bp)    
+        app.register_blueprint(maintenance.routes.maintenance_bp)
         
         return app

@@ -1,0 +1,212 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Detalles de mantenimiento {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="/static/assets/plugins/daterangepicker/daterangepicker.css">
+  <!-- summernote -->
+  <style>
+      .container {
+  border: 2px solid #dedede;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+/* Darker chat container */
+.darker {
+  border-color: #ccc;
+  background-color: #ddd;
+}
+
+/* Clear floats */
+.container::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Style images */
+.container img {
+  float: left;
+  max-width: 60px;
+  width: 100%;
+  margin-right: 20px;
+  border-radius: 50%;
+}
+
+/* Style the right image */
+.container img.right {
+  float: right;
+  margin-left: 20px;
+  margin-right:0;
+}
+
+/* Style time text */
+.time-right {
+  float: right;
+  color: #aaa;
+}
+
+/* Style time text */
+.time-left {
+  float: left;
+  color: #999;
+}
+  </style>
+
+{% endblock stylesheets %}
+
+{% block content %}
+  
+  <div class="content-wrapper">
+
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Detalles del mantenimiento</h1>
+            
+            
+            
+          </div><!-- /.col -->
+          
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        
+        <!-- /.row -->
+        <!-- Main row -->
+        <div class="row">
+          <!-- Left col -->
+          <div class="col-md-5   col-sm-12 ">
+            <div class="card card-primary card-outline">
+                <div class="card-body box-profile">
+                  <div class="text-center">
+                    <img class=" img-fluid " src="{%if maintenance.vehicle.photo is none%} /static/assets/img/default-car.png {%else%}/static/uploads/vehicles/{{maintenance.vehicle.photo}} {%endif%}" alt="User profile picture" width=150>
+                  </div>
+  
+                  
+                  <h3 class="profile-username text-center">                    
+                    {{maintenance.vehicle.brand.name}} {{maintenance.vehicle.model}} {{maintenance.vehicle.year}}                                         
+                  </h3>
+  
+                  <p class="text-muted text-center">
+                    {%if maintenance.vehicle.driver != None%}
+                    Conductor: <a href="{{url_for('drivers_bp.profile',id=maintenance.vehicle.driver.id)}}">{{maintenance.vehicle.driver.name}} {{maintenance.vehicle.driver.lastname}}</a>
+                    {%else%}
+                    Sin conductor asignado
+                    {%endif%}                                        
+                  </p>
+                  <p>Tipo de mantenimiento: <span class="right badge badge-{%if maintenance.maintenance_type=='Preventivo'%}warning{%else%}danger{%endif%}">{{maintenance.maintenance_type}}</span></p>
+                  <p>Estado: <span class="right badge badge-{%if maintenance.status=='Pendiente'%}danger{%else%}{%if maintenance.status=='En proceso'%}warning{%else%}success{%endif%}{%endif%}">{{maintenance.status}}</span></p>
+
+                  <ul class="list-group list-group-unbordered mb-3">                    
+                        
+                    <li class="list-group-item">
+                      <b>Placa</b> <a class="float-right">{{maintenance.vehicle.plate}}</a>
+                    </li>
+                    <li class="list-group-item">
+                      <b>Color</b> <a class="float-right">{{maintenance.vehicle.color  }}</a>
+                    </li>
+                    <li class="list-group-item">
+                      <b>Año</b> <a class="float-right">{{maintenance.vehicle.year  }}</a>
+                    </li>
+                  </ul>
+  
+                  <a href="{{url_for('maintenance_bp.edit',id=maintenance.id)}}" class="btn btn-primary "><b>Editar</b></a>
+                </div>
+                <!-- /.card-body -->
+              </div>      
+          </div>
+
+          <div class="col-7 ">
+            <div class="card card-primary card-outline">
+                <div class="card-body box-profile">
+                  <div class="text-center">                
+                  </div>                    
+                  <h3 class="profile-username text-center">                    
+                    Comentarios
+                  </h3>  
+                  <p class="text-muted text-center">                                          
+                    <div class="card-body table-responsive p-0">                      
+                        {%for comment in comments%}
+                            <div class="container">                
+                                <p>        {{comment.comment}}</p>
+                                <span class="time-right">{{comment.created_at.strftime('%d/%m/%Y %H:%M:%S')}}</span>
+                            </div>                                                                                                            
+                        {%endfor%}                                          
+                  </div>        
+                                      
+                  </p>
+                 
+  
+                  
+                </div>
+                <!-- /.card-body -->
+            </div>      
+          </div>
+         
+          <!-- right col -->
+        </div>
+        <!-- /.row (main row) -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+
+  </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- jQuery UI 1.11.4 -->
+  <script src="/static/assets/plugins/jquery-ui/jquery-ui.min.js"></script>
+  <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+  <script>
+    $.widget.bridge('uibutton', $.ui.button)
+  </script>
+  <!-- Bootstrap 4 -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- ChartJS -->
+  <!-- Sparkline -->
+  <!-- JQVMap -->
+  <!-- jQuery Knob Chart -->
+  <!-- daterangepicker -->
+  <!-- Tempusdominus Bootstrap 4 -->
+  <!-- Summernote -->
+  <!-- overlayScrollbars -->
+  <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.js"></script>
+  <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+  <!-- AdminLTE for demo purposes -->
+
+{% endblock javascripts %}

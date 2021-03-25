@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Registro de trackers {% endblock %} 
+{% block title %} Registro de mantenimientos {% endblock %} 
 
 <!-- Element injected in the BODY element -->
 {% block body_class %} sidebar-mini {% endblock body_class %} 
@@ -37,9 +37,9 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Registro de tracker</h1>
+            <h1 class="m-0 text-dark">Registro de mantenimiento</h1>
             
-          
+         
             
           </div><!-- /.col -->
           
@@ -59,47 +59,47 @@
           <!-- Left col -->
           <div class="col-md-12">
             <!-- general form elements -->
-            <div class="card card-primary">
+            <div class="card card-warning">
               <div class="card-header">
-                <h3 class="card-title">Datos del tracker</h3>
+                <h3 class="card-title">Datos del mantenimiento</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
               <form method="POST" >
+                <input type="hidden" name="maintenance_id" value="{{maintenance.id}}">
                 <div class="card-body">
                     <div class="row">
+                        <div class="form-group col-md-4">
+                            <label for="brands-select">Vehículo</label><br>
+                            <label >{{maintenance.vehicle.plate}} {{maintenance.vehicle.brand.name}} {{maintenance.vehicle.model}} </label>                                                            
+                        </div>
                         <div class="form-group col-md-4"> 
-                            <label for="exampleInputEmail1">IMEI</label>
-                            <input type="text" class="form-control" id="imei" name="imei" placeholder="imei" required>
-                          </div>                          
-                          <div class="form-group col-md-4" >
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Número de teléfono</label>
-                                <input type="text" class="form-control" id="phone" name="phone" placeholder="Teléfono" required>
-                              </div>
-                          </div>
-                          <div class="form-group col-md-4">
-                            <label for="brands-select">Protocolo</label>
-                            <select  id="protocol-select" name="tracker_protocol_id" class="form-control select2 select2-hidden-accessible" style="width: 100%"  required>
-                                <option></option>
-                                {%for protocol in trackers_protocols%}        
-                                    <option value="{{protocol.id}}">{{protocol.name}}  </option>
-                                {%endfor%}                                                  
-                              </select>
-                          </div>
-                          
-                    </div>                                        
+                            <label for="exampleInputEmail1">Tipo de mantenimiento</label>
+                            <select  id="type-select" name="maintenance_type" class="form-control select2 select2-hidden-accessible" style="width: 100%"  required>                                
+                                
+                                <option value="Preventivo" {% if maintenance.maintenance_type=='Preventivo'%} selected="selected"{%endif%}>Preventivo </option>                                                                           
+                                <option value="Correctivo" {% if maintenance.maintenance_type=='Correctivo'%} selected="selected"{%endif%}>Correctivo </option>                                                                           
+                            </select>
+                        </div>                                                                              
+                        <div class="form-group col-md-4"> 
+                            <label for="exampleInputEmail1">Status del mantenimiento</label>
+                            <select  id="status-select" name="status" class="form-control select2 select2-hidden-accessible" style="width: 100%"  required>                                                            
+                                <option value="En proceso" {% if maintenance.status=='En proceso'%} selected="selected"{%endif%}>En proceso </option>
+                                <option value="Pendiente" {% if maintenance.status=='Pendiente'%} selected="selected"{%endif%}>Pendiente</option>
+                                <option value="Completado" {% if maintenance.status=='Completado'%} selected="selected"{%endif%}>Completado </option>                                                                                                           
+                            </select>
+                        </div>                                                                              
+                    </div>       
                     <div class="row">
-                      <div class="form-group col-md-4">
-                        <label for="brands-select">Vehículo</label>
-                        <select  id="vehicle-select" name="vehicle_id" class="form-control select2 select2-hidden-accessible" style="width: 100%"  required>
-                            <option></option>
-                            {%for vehicle in vehicles%}        
-                                <option value="{{vehicle.id}}">{{vehicle.brand.name}} {{vehicle.model}} {{vehicle.year}} </option>
-                            {%endfor%}                                                  
-                          </select>
-                      </div>
-                    </div>
+                        <div class="col-sm-6">
+                            <!-- textarea -->
+                            <div class="form-group">
+                              <label>Comentarios</label>
+                              <textarea name="comment" class="form-control" rows="3" placeholder="Comentarios pertinentes" ></textarea>
+                            </div>
+                          </div>
+                    </div>                                 
+                    
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
@@ -140,23 +140,19 @@
             placeholder: "Seleccione un vehículo",
             allowClear: true            
         });
-        $('#protocol-select').select2({
-            placeholder: "Seleccione un protocolo",
-            allowClear: true            
+        $('#type-select').select2({
+            placeholder: "Seleccione un tipo de mantenimiento",
+        });
+        $('#status-select').select2({
+            placeholder: "Seleccione un status",
+            
         });
         
     });
   </script>
   <!-- Bootstrap 4 -->
   <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <!-- ChartJS -->
-  <!-- Sparkline -->
-  <!-- JQVMap -->
-  <!-- jQuery Knob Chart -->
-  <!-- daterangepicker -->
-  <!-- Tempusdominus Bootstrap 4 -->
-  <!-- Summernote -->
-  <!-- overlayScrollbars -->
+  
   <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
   <!-- AdminLTE App -->
   <script src="/static/assets/js/adminlte.js"></script>

@@ -1,0 +1,136 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Mantenimiento de vehículos {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/sweetalert2/sweetalert2.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  
+{% endblock stylesheets %}
+
+{% block content %}
+  
+  <div class="content-wrapper">
+
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Mantenimiento de vehículos</h1>            
+            
+          </div><!-- /.col -->
+          
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        
+        <!-- /.row -->
+        <!-- Main row -->
+        
+        <div class="row">
+          <!-- Left col -->
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Mantenimientos vehículos </h3>            
+                <a href="{{url_for('maintenance_bp.add')}}" class="btn btn-primary float-right "><b>Nuevo</b></a>            
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>Vehículo</th>                       
+                      <th>Conductor</th>
+                      <th>Tipo de mantenimiento</th>                                           
+                      <th>Status</th>
+                      <th>Acciones</th>                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for maintenance in maintenances%}
+                      <tr>
+                        <td><a href="{{url_for('vehicles_bp.detail',id=maintenance.vehicle.id)}}">{{maintenance.vehicle.plate}} / {{maintenance.vehicle.brand.name}} {{maintenance.vehicle.model}}</a></td>
+                        <td>{%if maintenance.vehicle.driver != None%}<a href="{{url_for('drivers_bp.profile',id=maintenance.vehicle.driver.id)}}">{{maintenance.vehicle.driver.name}} {{maintenance.vehicle.driver.lastname}}</a>{%else%}<span class="right badge badge-danger">Sin asignar</span>{%endif%}</td>
+                        <td><span class="right badge badge-{%if maintenance.maintenance_type=='Preventivo'%}warning{%else%}danger{%endif%}">{{maintenance.maintenance_type}}</span></td>
+                        <td><span class="right badge badge-{%if maintenance.status=='Pendiente'%}danger{%else%}{%if maintenance.status=='En proceso'%}warning{%else%}success{%endif%}{%endif%}">{{maintenance.status}}</span></td>                                                                        
+                        <td><a  href="{{url_for('maintenance_bp.detail',id=maintenance.id)}}"><i class="icon fas fa-eye"></i></a></td>
+                      </tr>
+                    {%endfor%}                    
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+         
+          <!-- right col -->
+        </div>
+        <!-- /.row (main row) -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+
+  </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- jQuery UI 1.11.4 -->
+  <script src="/static/assets/plugins/jquery-ui/jquery-ui.min.js"></script>
+  <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+  <script>
+    $.widget.bridge('uibutton', $.ui.button)
+  </script>
+  <!-- Bootstrap 4 -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/assets/plugins/sweetalert2/sweetalert2.min.js"></script>
+  <script src="/static/assets/js/utils.js"></script>
+
+  {% with messages = get_flashed_messages(with_categories=true)%}
+    {% if messages %}
+      {% for category,message in messages%}
+        <script>
+          Toast.fire({
+            icon: '{{category}}',
+            title: '{{message}}'
+            })
+        </script>                  
+      {% endfor%}
+    {% endif %}
+  {% endwith %}  
+
+  
+  <!-- overlayScrollbars -->
+  <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.js"></script>
+  
+
+{% endblock javascripts %}

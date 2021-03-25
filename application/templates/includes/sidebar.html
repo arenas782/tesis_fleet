@@ -68,6 +68,17 @@
               </a>              
             </li>            
             {%endif%}
+            {%if 'admin'==role.name or 'taller' == role.name%}
+            <li class="nav-item">
+              <a href="{{ url_for('maintenance_bp.home') }}" class="nav-link {% if 'maintenance' in segment %} active {% endif %}">
+                <i class="nav-icon fas fa-wrench"></i>
+                <p>
+                  Mantenimiento
+                </p>
+              </a>
+            </li>
+                    
+            {%endif%}
             {%if 'admin'==role.name%}
               <li class="nav-item has-treeview {% if 'layout' in segment %} menu-open {% endif %}">
                 <a href="{{ url_for('users_bp.home') }}" class="nav-link {% if 'users' in segment %} active {% endif %}">
