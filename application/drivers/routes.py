@@ -18,18 +18,25 @@ drivers_bp = Blueprint(
 @drivers_bp.before_request
 @login_required
 def before_request():
-    for user_role in current_user.roles:
-        if (user_role.name=='admin' or user_role.name=='personal'):
-            pass
-        else:
-            flash('No está autorizado para acceder a esta sección','error')
-            return redirect(url_for('home_bp.dashboard'))    
-    pass 
+    
+    if (current_user.role.name=='admin' or current_user.role.name=='personal'):
+        pass
+    else:
+        flash('No está autorizado para acceder a esta sección','error')
+        return redirect(url_for('home_bp.dashboard'))    
+     
 
 
 @drivers_bp.route('/')
 def home():
-    drivers = Driver.query.all()
+    rows_per_page = 3
+    page = request.args.get('page', 1, type=int)
+    query = request.args.get('query')
+    if query:        
+        drivers = Driver.query.filter(or_(Driver.dni.like('%'+query+'%'),Driver.name.like('%'+query+'%'),Driver.lastname.like('%'+query+'%'))).order_by(Driver.created_at.desc()).paginate(page=page,per_page=rows_per_page)                   
+    else:        
+        drivers = Driver.query.order_by(Driver.created_at.desc()).paginate(page=page,per_page=rows_per_page)                           
+    
     return render_template(
         'drivers/index.html',        
         segment = 'drivers',

@@ -55,31 +55,31 @@
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">Listado de usuarios en el sistema</h3>
+                <a href="{{url_for('users_bp.add')}}" class="btn btn-primary float-right "><b>Nuevo</b></a>            
+
             
               </div>
               <!-- /.card-header -->
               <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
                   <thead>
-                    <tr>
-                      <th>ID</th>
+                    <tr>                    
                       <th>Nombre</th>
-                      <th>Email</th>
-                      <th>Teléfono</th>
+                      <th>Email</th>                    
+                      <th>Rol</th>
                       <th>F. de creación</th>
                       <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
                     {%for user in users%}
+                    
                       <tr>
-                        <td>{{user.id}}</td>
                         <td>{{user.name}} {{user.lastname}}</td>
-                        <td>{{user.email}}</td>
-                        <td>{{user.phone}}</td>
+                        <td>{{user.email}}</td>                      
+                        <td>{{user.role.name}}</td>
                         <td>{{user.created_at.strftime('%d/%m/%Y %H:%M:%S')}}</td>
                         <td>
-                          <a href="{{url_for('users_bp.profile',id=user.id)}}"><i class="icon fas fa-eye"></i></a>
                           <a href="{{url_for('users_bp.edit',id=user.id)}}"><i class="icon fas fa-edit"></i></a>
                         </td>
                       </tr>

@@ -15,9 +15,9 @@
         </div>
         <div class="info">
           <a href="#" class="d-block" style="color:white">{{ current_user.name }} {{current_user.lastname}}</a>
-          {%for role in current_user.roles%}
-            <p class="muted-text" style="color:gray">{{role.name}}</p>
-          {%endfor%}
+          
+            <p class="muted-text" style="color:gray">{{current_user.role.name}}</p>
+          
         </div>
       </div>
 
@@ -38,9 +38,9 @@
           </li>
           
           
-          {% for role in current_user.roles%}
+          
             
-            {%if 'admin'==role.name or 'personal' == role.name%}
+            {%if 'admin'==current_user.role.name or 'personal' == current_user.role.name%}
             <li class="nav-item has-treeview ">
               <a href="{{ url_for('drivers_bp.home') }}" class="nav-link {% if 'drivers' in segment %} active {% endif %}">
                 <i class="nav-icon fas fa-user-friends"></i>
@@ -50,7 +50,7 @@
               </a>            
             </li>
             {%endif%}
-            {%if 'admin'==role.name or 'operador' == role.name%}
+            {%if 'admin'==current_user.role.name or 'operador' == current_user.role.name%}
             <li class="nav-item">
               <a href="{{ url_for('vehicles_bp.home') }}" class="nav-link {% if 'vehicles' in segment %} active {% endif %}">
                 <i class="nav-icon fas fa-car"></i>
@@ -68,7 +68,7 @@
               </a>              
             </li>            
             {%endif%}
-            {%if 'admin'==role.name or 'taller' == role.name%}
+            {%if 'admin'==current_user.role.name or 'taller' == current_user.role.name%}
             <li class="nav-item">
               <a href="{{ url_for('maintenance_bp.home') }}" class="nav-link {% if 'maintenance' in segment %} active {% endif %}">
                 <i class="nav-icon fas fa-wrench"></i>
@@ -79,7 +79,7 @@
             </li>
                     
             {%endif%}
-            {%if 'admin'==role.name%}
+            {%if 'admin'==current_user.role.name%}
               <li class="nav-item has-treeview {% if 'layout' in segment %} menu-open {% endif %}">
                 <a href="{{ url_for('users_bp.home') }}" class="nav-link {% if 'users' in segment %} active {% endif %}">
                   <i class="nav-icon fas fa-user-circle"></i>
@@ -88,22 +88,14 @@
                   </p>
                 </a>        
               </li>                    
-            {%endif%}
-          {%endfor%}                              
-          <li class="nav-item has-treeview ">
-            <a href="#" class="nav-link {% if 'ui-' in segment %} active {% endif %}">
-              <i class="nav-icon fas fa-chart-bar"></i>
-              <p>
-                Reportes            
-              </p>
-            </a>            
-          </li>
+            {%endif%}          
+          
           
           <li class="nav-item has-treeview {% if 'tables-' in segment %} menu-open {% endif %}">
             <a href="{{url_for('auth_bp.logout')}}" class="nav-link {% if 'tables-' in segment %} active {% endif %}">
               <i class="nav-icon fas fa-table"></i>
               <p>
-                Logout                
+                Cerrar sesión        
               </p>
             </a>            
           </li>                                        

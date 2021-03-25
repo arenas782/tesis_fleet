@@ -27,10 +27,20 @@ class User(UserMixin,Base):
     name = db.Column(db.String(40), nullable=False)
     lastname = db.Column(db.String(40), nullable=False)
     email = db.Column(db.String(40), nullable=False)
-    password = db.Column(db.String(200), nullable=False)
+    password = db.Column(db.String(200), nullable=False) 
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
-    roles = db.relationship('Role', secondary='user_roles')
+    
+    #relations
+
+    role_id = db.Column(
+        db.Integer, 
+        db.ForeignKey('roles.id'),     
+    )
+
+    
+    role = db.relationship('Role')
+
     
    
     def set_password(self, password):
@@ -56,20 +66,7 @@ class Role(Base):
     name = db.Column(db.String(20), unique=True)
    
 
-class UserRoles(Base):
-    __tablename__ = 'user_roles'
-    __table_args__ = {'extend_existing': True}
 
-    id = db.Column(db.Integer(), primary_key=True)
-    user_id = db.Column(
-        db.Integer(), 
-        db.ForeignKey('users.id'), 
-    )
-
-    role_id = db.Column(
-        db.Integer, 
-        db.ForeignKey('roles.id'),     
-    )
 
 class DriversVehicles(Base):
     __tablename__ = 'drivers_vehicles'
@@ -105,6 +102,9 @@ class Vehicle(Base):
     brand = db.relationship('VehicleBrand')
     driver_id = db.Column(db.Integer, db.ForeignKey('drivers.id', ondelete='cascade'),nullable=True)
     driver = db.relationship('Driver')
+    maintenances = db.relationship('Maintenance')
+    
+    
     
     tracker = db.relationship("Tracker", backref="trackers", lazy='dynamic')
 

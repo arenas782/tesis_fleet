@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/datatables/datatables.css">
   
 {% endblock stylesheets %}
 
@@ -57,31 +58,75 @@
                 <a href="{{url_for('maintenance_bp.add')}}" class="btn btn-primary float-right "><b>Nuevo</b></a>            
               </div>
               <!-- /.card-header -->
-              <div class="card-body table-responsive p-0">
-                <table class="table table-hover text-nowrap">
-                  <thead>
-                    <tr>
-                      <th>Vehículo</th>                       
-                      <th>Conductor</th>
-                      <th>Tipo de mantenimiento</th>                                           
-                      <th>Status</th>
-                      <th>Acciones</th>                      
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for maintenance in maintenances%}
+              <div class="card-body table-responsive p-4">
+                <form method="GET">
+                    <div class="row">
+                        <div class="form-group col-md-3"> 
+                            <label for="exampleInputEmail1">Búsqueda por vehículo</label>
+                            <input type="text" class="form-control"  name="query" placeholder="Placa    " >
+                        </div>
+                    </div>
+                  </form>
+                {% if maintenances.items|length > 0%}
+                <table class="table table-hover text-nowrap" id="table">
+                    <thead>
                       <tr>
-                        <td><a href="{{url_for('vehicles_bp.detail',id=maintenance.vehicle.id)}}">{{maintenance.vehicle.plate}} / {{maintenance.vehicle.brand.name}} {{maintenance.vehicle.model}}</a></td>
-                        <td>{%if maintenance.vehicle.driver != None%}<a href="{{url_for('drivers_bp.profile',id=maintenance.vehicle.driver.id)}}">{{maintenance.vehicle.driver.name}} {{maintenance.vehicle.driver.lastname}}</a>{%else%}<span class="right badge badge-danger">Sin asignar</span>{%endif%}</td>
-                        <td><span class="right badge badge-{%if maintenance.maintenance_type=='Preventivo'%}warning{%else%}danger{%endif%}">{{maintenance.maintenance_type}}</span></td>
-                        <td><span class="right badge badge-{%if maintenance.status=='Pendiente'%}danger{%else%}{%if maintenance.status=='En proceso'%}warning{%else%}success{%endif%}{%endif%}">{{maintenance.status}}</span></td>                                                                        
-                        <td><a  href="{{url_for('maintenance_bp.detail',id=maintenance.id)}}"><i class="icon fas fa-eye"></i></a></td>
+                        <th>Vehículo</th>                       
+                        <th>Conductor</th>
+                        <th>Tipo de mantenimiento</th>                                           
+                        <th>Status</th>
+                        <th>Acciones</th>                      
                       </tr>
-                    {%endfor%}                    
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {% for maintenance in maintenances.items%}
+                        <tr>
+                          <td><a href="{{url_for('vehicles_bp.detail',id=maintenance.vehicle.id)}}">{{maintenance.vehicle.plate}} / {{maintenance.vehicle.brand.name}} {{maintenance.vehicle.model}}</a></td>
+                          <td>{%if maintenance.vehicle.driver != None%}<a href="{{url_for('drivers_bp.profile',id=maintenance.vehicle.driver.id)}}">{{maintenance.vehicle.driver.name}} {{maintenance.vehicle.driver.lastname}}</a>{%else%}<span class="right badge badge-danger">Sin asignar</span>{%endif%}</td>
+                          <td><span class="right badge badge-{%if maintenance.maintenance_type=='Preventivo'%}warning{%else%}danger{%endif%}">{{maintenance.maintenance_type}}</span></td>
+                          <td><span class="right badge badge-{%if maintenance.status=='Pendiente'%}danger{%else%}{%if maintenance.status=='En proceso'%}warning{%else%}success{%endif%}{%endif%}">{{maintenance.status}}</span></td>                                                                        
+                          <td><a  href="{{url_for('maintenance_bp.detail',id=maintenance.id)}}"><i class="icon fas fa-eye"></i></a></td>
+                        </tr>
+                      {%endfor%}                    
+                    </tbody>
+                  </table>
+
+                {%else%}
+                <p>No hay coincidencias</p>
+                {%endif%}
+
+                
               </div>
               <!-- /.card-body -->
+              <div class="card-footer ">  
+                {% if maintenances.items|length > 0%}
+                <div class="text-right">
+                    <a href="{{ url_for('maintenance_bp.home', page=maintenances.prev_num) }}" class="btn btn-outline-dark  {% if maintenances.page == 1 %}disabled{% endif %}">
+                      <i class="fas fa-chevron-left"></i>
+                    </a>
+                    {% for page_num in maintenances.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}{% if page_num %}
+                      {% if maintenances.page == page_num %}
+                        <a href="{{ url_for('maintenance_bp.home' ,page=page_num) }}" class="btn btn-dark">
+                          {{ page_num }}
+                        </a>
+                        {% else %}
+                          <a href="{{ url_for('maintenance_bp.home',page=page_num) }}" class="btn btn-outline-dark">
+                          {{ page_num }}
+                          </a>
+                      {% endif %}
+                      {% else %}          
+                      {% endif %}
+                    {% endfor %} 
+                    <a href="{{ url_for('maintenance_bp.home',page=maintenances.next_num) }}" class="btn btn-outline-dark {% if maintenances.page == maintenances.pages %}disabled{% endif %}">
+                      <i class="fas fa-chevron-right"></i>
+                    </a>
+                  </div>
+                  <p class="text-right mt-3">
+                    Mostrando página {{ maintenances.page }} de {{ maintenances.pages }}
+                  </p>                              
+                {%endif%}                        
+                
+              </div>
             </div>
             <!-- /.card -->
           </div>
@@ -106,6 +151,9 @@
   <script src="/static/assets/plugins/jquery-ui/jquery-ui.min.js"></script>
   <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
   <script>
+    $(document).ready( function () {
+      
+    } );
     $.widget.bridge('uibutton', $.ui.button)
   </script>
   <!-- Bootstrap 4 -->
@@ -131,6 +179,7 @@
   <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
   <!-- AdminLTE App -->
   <script src="/static/assets/js/adminlte.js"></script>
+  <script type="text/javascript" charset="utf8" src="/static/assets/plugins/datatables/datatables.js"></script>
   
 
 {% endblock javascripts %}

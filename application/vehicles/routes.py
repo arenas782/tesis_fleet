@@ -15,18 +15,23 @@ vehicles_bp = Blueprint(
 
 @vehicles_bp.before_request
 @login_required
-def before_request():
-    for user_role in current_user.roles:
-        if (user_role.name=='admin' or user_role.name=='operador'):
-            pass
-        else:
-            flash('No está autorizado para acceder a esta sección','error')
-            return redirect(url_for('home_bp.dashboard'))    
-    pass     
+def before_request():    
+    if (current_user.role.name=='admin' or current_user.role.name=='operador'):
+        pass
+    else:
+        flash('No está autorizado para acceder a esta sección','error')
+        return redirect(url_for('home_bp.dashboard'))    
+
 
 @vehicles_bp.route('/')
 def home():
-    vehicles = Vehicle.query.all()
+    rows_per_page = 3
+    page = request.args.get('page', 1, type=int)
+    query = request.args.get('query')
+    if query:        
+        vehicles = Vehicle.query.filter(Vehicle.plate.like('%'+query+'%')).order_by(Vehicle.created_at.desc()).paginate(page=page,per_page=rows_per_page)                   
+    else:        
+        vehicles = Vehicle.query.order_by(Vehicle.created_at.desc()).paginate(page=page,per_page=rows_per_page)                           
     return render_template(
         'vehicles/index.html',        
         segment = 'vehicles',

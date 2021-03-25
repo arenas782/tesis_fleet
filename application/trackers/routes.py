@@ -15,14 +15,13 @@ trackers_bp = Blueprint(
 
 @trackers_bp.before_request
 @login_required
-def before_request():
-    for user_role in current_user.roles:
-        if (user_role.name=='admin' or user_role.name=='operador'):
-            pass
-        else:
-            flash('No está autorizado para acceder a esta sección','error')
-            return redirect(url_for('home_bp.dashboard'))    
-    pass     
+def before_request():    
+    if (current_user.role.name=='admin' or current_user.role.name=='operador'):
+        pass
+    else:
+        flash('No está autorizado para acceder a esta sección','error')
+        return redirect(url_for('home_bp.dashboard'))    
+         
 
 @trackers_bp.route('/')
 def home():
@@ -80,7 +79,7 @@ def commands(id):
         
     else:
 
-        rows_per_page = 15
+        rows_per_page = 10
         page = request.args.get('page', 1, type=int)
         tracker = Tracker.query.get(id)
         protocol = TrackerProtocol.query.get(tracker.protocol.id)

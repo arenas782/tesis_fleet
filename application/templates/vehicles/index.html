@@ -57,7 +57,16 @@
                 <a href="{{url_for('vehicles_bp.add')}}" class="btn btn-primary float-right "><b>Nuevo</b></a>            
               </div>
               <!-- /.card-header -->
-              <div class="card-body table-responsive p-0">
+              <div class="card-body table-responsive p-3">
+                <form method="GET">
+                  <div class="row">
+                      <div class="form-group col-md-3"> 
+                          <label for="exampleInputEmail1">Búsqueda de vehículos </label>
+                          <input type="text" class="form-control"  name="query" placeholder="Placa" >
+                      </div>
+                  </div>
+                </form>
+                {% if vehicles.items|length > 0%}
                 <table class="table table-hover text-nowrap">
                   <thead>
                     <tr>
@@ -73,7 +82,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {% for vehicle in vehicles%}
+                    {% for vehicle in vehicles.items%}
                       <tr>
                         <td>{{vehicle.plate}}</td>
                         <td>{{vehicle.brand.name}}</td>
@@ -87,7 +96,7 @@
                             <span class="right badge badge-danger">Sin asignar</span>
                           {%endif%}
                         </td>
-                        <td><img class=" img-fluid " src="{%if vehicle.photo is none%} /static/assets/img/default-car.png {%else%}/static/uploads/vehicles/{{vehicle.photo}} {%endif%}" alt="Vehicle picture" width=120></td>
+                        <td><img class=" img-fluid " src="{%if vehicle.photo is none%} /static/assets/img/default-car.png {%else%}/static/uploads/vehicles/{{vehicle.photo}} {%endif%}" alt="Vehicle picture" width="90"></td>
                         <td>
                           <a href="{{url_for('vehicles_bp.detail',id=vehicle.id)}}"><i class="icon fas fa-eye"></i></a>
                           <a href="{{url_for('vehicles_bp.edit',id=vehicle.id)}}"><i class="icon fas fa-edit"></i></a>
@@ -96,6 +105,38 @@
                     {%endfor%}                    
                   </tbody>
                 </table>
+                  {%else%}
+                    <p>No hay coincidencias</p>
+                {%endif%}
+                
+              </div>
+              <div class="card-footer ">  
+                {% if vehicles.items|length > 0%}
+                <div class="text-right">
+                    <a href="{{ url_for('vehicles_bp.home', page=vehicles.prev_num) }}" class="btn btn-outline-dark  {% if vehicles.page == 1 %}disabled{% endif %}">
+                      <i class="fas fa-chevron-left"></i>
+                    </a>
+                    {% for page_num in vehicles.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}{% if page_num %}
+                      {% if vehicles.page == page_num %}
+                        <a href="{{ url_for('vehicles_bp.home' ,page=page_num) }}" class="btn btn-dark">
+                          {{ page_num }}
+                        </a>
+                        {% else %}
+                          <a href="{{ url_for('vehicles_bp.home',page=page_num) }}" class="btn btn-outline-dark">
+                          {{ page_num }}
+                          </a>
+                      {% endif %}
+                      {% else %}          
+                      {% endif %}
+                    {% endfor %} 
+                    <a href="{{ url_for('vehicles_bp.home',page=vehicles.next_num) }}" class="btn btn-outline-dark {% if vehicles.page == vehicles.pages %}disabled{% endif %}">
+                      <i class="fas fa-chevron-right"></i>
+                    </a>
+                  </div>
+                  <p class="text-right mt-3">
+                    Mostrando página {{ vehicles.page }} de {{ vehicles.pages }}
+                  </p>                              
+                {%endif%}                                        
               </div>
               <!-- /.card-body -->
             </div>

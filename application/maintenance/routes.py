@@ -13,18 +13,25 @@ maintenance_bp = Blueprint(
 
 @maintenance_bp.before_request
 @login_required
-def before_request():
-    for user_role in current_user.roles:
-        if (user_role.name=='admin' or user_role.name=='taller'):
-            pass
-        else:
-            flash('No está autorizado para acceder a esta sección','error')
-            return redirect(url_for('home_bp.dashboard'))    
-    pass     
+def before_request():    
+    if (current_user.role.name=='admin' or current_user.role.name=='taller'):
+        pass
+    else:
+        flash('No está autorizado para acceder a esta sección','error')
+        return redirect(url_for('home_bp.dashboard'))    
+    
 
 @maintenance_bp.route('/')
 def home():
-    maintenances = Maintenance.query.all()
+    rows_per_page = 5
+    page = request.args.get('page', 1, type=int)
+    query = request.args.get('query')
+
+    if query:        
+        maintenances = Maintenance.query.join(Vehicle).filter(Vehicle.plate.like('%'+query+'%')).order_by(Maintenance.created_at.desc()).paginate(page=page,per_page=rows_per_page)    
+        
+    else:        
+        maintenances = Maintenance.query.order_by(Maintenance.created_at.desc()).paginate(page=page,per_page=rows_per_page)
     return render_template(
         'maintenance/index.html',                
         maintenances = maintenances,
@@ -43,11 +50,7 @@ def add():
         newMaintenance.comments.append(MaintenanceComment(comment=comment))
         newMaintenance.create()
         
-        flash('Nuevo mantenimiento registrado','success')
-            
-        
-
-        
+        flash('Nuevo mantenimiento registrado','success')                            
         return redirect(url_for('maintenance_bp.home'))                                
     else:
 
@@ -81,10 +84,7 @@ def edit(id):
         maintenance = Maintenance.query.get(request.values.get('maintenance_id'))
         maintenance.status = request.values.get('status')
         maintenance.maintenance_type= request.values.get('maintenance_type')        
-
-        comment = request.values.get('comment')        
-
-        
+        comment = request.values.get('comment')                
         try:
             if(comment):
                 maintenance.comments.append(MaintenanceComment(comment=comment))

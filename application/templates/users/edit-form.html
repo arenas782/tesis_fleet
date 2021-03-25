@@ -109,6 +109,16 @@
                                 <input type="password" class="form-control"  name="password_confirm"  minlength="8" placeholder="********" value="">
                             </div>
                         </div>                        
+                        <div class="form-group col-md-4">
+                          <label for="brands-select">Rol</label>
+                          <select  id="role-select" name="role_id" class="form-control select2 select2-hidden-accessible" style="width: 100%"  required>
+                              <option></option>
+    
+                              {%for role in roles%}      
+                                  <option value="{{role.id}}" {%if role.id==user.role.id%} selected="selected"{%endif%}>{{role.name}}</option>
+                              {%endfor%}                                                  
+                            </select>
+                        </div>       
                     </div>
                         
                     </div>                                                      
@@ -147,8 +157,8 @@
   <script>
     $.widget.bridge('uibutton', $.ui.button)
     $(document).ready(function() {
-        $('#vehicle-select').select2({
-            placeholder: "Seleccione un vehículo",
+        $('#role-select').select2({
+            placeholder: "Seleccione un rol",
             allowClear: true
   
         });                

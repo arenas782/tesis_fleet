@@ -12,14 +12,13 @@ home_bp = Blueprint(
 
 @home_bp.before_request
 @login_required
-def before_request():
-    for user_role in current_user.roles:
-        if (user_role.name=='admin' or user_role.name=='personal' or user_role.name=='taller' or user_role.name=='operador'  ):
-            pass
-        else:
-            flash('No está autorizado para acceder a esta sección','error')
-            return redirect(url_for('home_bp.dashboard'))    
-    pass 
+def before_request():    
+    if (current_user.role.name=='admin' or current_user.role.name=='personal' or current_user.role.name=='taller' or current_user.role.name=='operador'  ):
+        pass
+    else:
+        flash('No está autorizado para acceder a esta sección','error')
+        return redirect(url_for('home_bp.dashboard'))    
+    
 
 
 @home_bp.route('/')

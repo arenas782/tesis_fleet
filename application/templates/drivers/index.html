@@ -60,7 +60,16 @@
                 <a href="{{url_for('drivers_bp.add')}}" class="btn btn-primary float-right "><b>Nuevo</b></a>            
               </div>
               <!-- /.card-header -->
-              <div class="card-body table-responsive p-0">
+              <div class="card-body table-responsive p-3">
+                <form method="GET">
+                  <div class="row">
+                      <div class="form-group col-md-3"> 
+                          <label for="exampleInputEmail1">Búsqueda de conductores </label>
+                          <input type="text" class="form-control"  name="query" placeholder="DNI / Nombres" >
+                      </div>
+                  </div>
+                </form>
+                {% if drivers.items|length > 0%}
                 <table class="table table-hover text-nowrap">
                   <thead>
                     <tr>
@@ -73,7 +82,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {% for driver in drivers%}
+                    
+                    {% for driver in drivers.items%}
                       <tr>
                         <td>{{driver.dni}}</td>
                         <td>{{driver.name}}</td>
@@ -88,6 +98,10 @@
                     {%endfor%}                    
                   </tbody>
                 </table>
+
+                {%else%}
+                    <p>No hay coincidencias</p>
+                {%endif%}                
               </div>
               <!-- /.card-body -->
               
