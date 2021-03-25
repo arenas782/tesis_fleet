@@ -1,10 +1,13 @@
 from flask import Blueprint,render_template,redirect,url_for,request,flash
 from flask import current_app as app
 from .. import login_manager
-from ..models import Tracker,Vehicle,db,TrackerProtocol,TrackerCommand,TrackerCommandHistory
+from ..models import Tracker,Vehicle,db,TrackerProtocol,TrackerCommand,TrackerCommandHistory,TrackerLog
 from ..utils import role_required   
 from sqlalchemy import and_,or_
 from flask_login import login_required, logout_user, current_user, login_user, logout_user
+from datetime import date
+import sys
+
 
 # Blueprint Configuration
 trackers_bp = Blueprint(
@@ -35,10 +38,17 @@ def home():
 def detail(id):
     tracker = Tracker.query.get(id)
     if tracker:
+        tracker_logs = TrackerLog.query.filter_by(tracker_id=tracker.id).order_by(TrackerLog.date.desc()).limit(5)
+        
+
+        last_sent_commands = TrackerCommandHistory.query.filter_by(tracker_id=tracker.id).order_by(TrackerCommandHistory.created_at.desc()).limit(5)
+
         return render_template(
             'trackers/detail.html',        
             segment = 'trackers',
             tracker = tracker,
+            tracker_logs = tracker_logs,
+            last_sent_commands = last_sent_commands,
             current_user=current_user,        
         )
     return render_template(
@@ -70,10 +80,12 @@ def commands(id):
         
     else:
 
+        rows_per_page = 15
+        page = request.args.get('page', 1, type=int)
         tracker = Tracker.query.get(id)
         protocol = TrackerProtocol.query.get(tracker.protocol.id)
         commands = TrackerCommand.query.filter(Tracker.tracker_protocol_id==protocol.id)
-        commands_history = TrackerCommandHistory.query.filter(TrackerCommandHistory.tracker_id==id)
+        commands_history = TrackerCommandHistory.query.filter(TrackerCommandHistory.tracker_id==id).order_by(TrackerCommandHistory.created_at.desc()).paginate(page=page,per_page=rows_per_page)
         return render_template(
                 'trackers/send-command.html',        
                 segment = 'trackers',
@@ -149,3 +161,38 @@ def edit(id):
                 segment = 'trackers',                
                 current_user=current_user,                
             )
+
+
+@trackers_bp.route('/maps/<id>')
+def maps(id):
+    tracker = Tracker.query.get(id)
+    if tracker:
+        today = date.today()
+        d1 = today.strftime("%Y-%m-%d")
+        newdate  = request.args.get('daterange')
+        markers = []
+        if newdate:            
+            newdate=newdate.split('-')
+            markers = TrackerLog.query.filter_by(tracker_id=tracker.id).filter(TrackerLog.date.between(newdate[0],newdate[1])).order_by(TrackerLog.created_at.desc())
+        else:
+            markers = TrackerLog.query.filter_by(tracker_id=tracker.id).filter_by(date=d1).order_by(TrackerLog.created_at.desc())
+
+        print (markers.count())
+        if markers.count() <1:
+            flash('No hay registros para la fecha especificada','error')                
+        return render_template(
+            'trackers/maps.html',        
+            segment = 'trackers',
+            markers = markers,
+            current_user=current_user,        
+        )
+            
+
+
+
+
+        
+        
+        
+
+

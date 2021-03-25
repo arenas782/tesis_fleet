@@ -23,8 +23,6 @@ class User(UserMixin,Base):
     __tablename__ = 'users'
     __table_args__ = {'extend_existing': True}
 
-
-
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(40), nullable=False)
     lastname = db.Column(db.String(40), nullable=False)
@@ -56,7 +54,7 @@ class Role(Base):
 
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(20), unique=True)
-    users = db.relationship('User', secondary='user_roles')
+   
 
 class UserRoles(Base):
     __tablename__ = 'user_roles'
@@ -164,28 +162,6 @@ class Tracker(Base):
 
 
 
-
-
-class Driver(Base):
-    __tablename__ = 'drivers'
-    __table_args__ = {'extend_existing': True}
-
-    id = db.Column(db.Integer(), primary_key=True)
-    dni = db.Column(db.String(15), unique=True)
-    name = db.Column(db.String(40))
-    lastname = db.Column(db.String(40))
-    address = db.Column(db.String(200))
-    email = db.Column(db.String(40))
-    phone = db.Column(db.String(20))
-    photo = db.Column(db.String(200))
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
-
-    #relations
-    vehicles = db.relationship("Vehicle", lazy='dynamic')
-
-    
-
 class TrackerProtocol(Base):
     __tablename__ = 'trackers_protocols'
     __table_args__ = {'extend_existing': True}
@@ -229,3 +205,19 @@ class TrackerCommandHistory(Base):
     tracker_command_id = db.Column(db.Integer, db.ForeignKey('trackers_commands.id', ondelete='cascade'),nullable=True)
     tracker = db.relationship('Tracker')
     commands = db.relationship('TrackerCommand')
+
+class TrackerLog(Base):
+    __tablename__ = 'trackers_logs'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer(), primary_key=True)    
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    latitude = db.Column(db.Numeric(10,6),nullable=True)
+    longitude = db.Column(db.Numeric(10,6),nullable=True)
+    event = db.Column(db.String(15))
+    date = db.Column(db.DateTime)
+
+    #relations
+    tracker_id = db.Column(db.Integer, db.ForeignKey('trackers.id', ondelete='cascade'),nullable=True)
+    tracker = db.relationship('Tracker')
+    

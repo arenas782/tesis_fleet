@@ -90,7 +90,7 @@
                             <table class="table table-hover text-nowrap">
                               <thead>
                                 <tr>
-                                  <th>ID</th>
+                                  
                                   <th>Comando</th>
                                   <th>Status</th>
                                   <th>Enviado</th>
@@ -99,19 +99,44 @@
                                 </tr>
                               </thead>
                               <tbody>                                        
-                                {%for command in commands_history%}                      
+                                {%for command in commands_history.items%}                      
                                   <tr>
-                                    <td>{{command.id}}</td>                                    
+                                    
                                     <td>{{command.commands.description}}</td>
                                     <td><span class="right badge badge-{%if command.status=='pending'%}warning{%else%}success{%endif%}">{{command.status}}</span></td>
                                     <td>{{command.created_at.strftime('%d/%m/%Y %H:%M:%S')}}</td>
                                     <td>{{command.updated_at.strftime('%d/%m/%Y %H:%M:%S')}}</td>
                                   </tr>                      
                                 {%endfor%}                    
-                              </tbody>
-                              
+                              </tbody>                              
                             </table>
+                        </div>
+                        <div class="card-footer ">                          
+                          <div class="text-right">
+                            <a href="{{ url_for('trackers_bp.commands', id=tracker.id, page=commands_history.prev_num) }}" class="btn btn-outline-dark  {% if commands_history.page == 1 %}disabled{% endif %}">
+                              <i class="fas fa-chevron-left"></i>
+                            </a>
+                            {% for page_num in commands_history.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}{% if page_num %}
+                              {% if commands_history.page == page_num %}
+                                <a href="{{ url_for('trackers_bp.commands',id=tracker.id, page=page_num) }}" class="btn btn-dark">
+                                  {{ page_num }}
+                                </a>
+                                {% else %}
+                                  <a href="{{ url_for('trackers_bp.commands', id=tracker.id,page=page_num) }}" class="btn btn-outline-dark">
+                                  {{ page_num }}
+                                  </a>
+                              {% endif %}
+                              {% else %}          
+                              {% endif %}
+                            {% endfor %} 
+                            <a href="{{ url_for('trackers_bp.commands', id=tracker.id,page=commands_history.next_num) }}" class="btn btn-outline-dark {% if commands_history.page == commands_history.pages %}disabled{% endif %}">
+                              <i class="fas fa-chevron-right"></i>
+                            </a>
                           </div>
+                          <p class="text-left mt-3">
+                            Mostrando página {{ commands_history.page }} de {{ commands_history.pages }}
+                          </p>                              
+                        </div>
                     </div>
                 </div>
                 <!-- /.card-body -->

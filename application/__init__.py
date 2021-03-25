@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from os import environ, path
 from dotenv import load_dotenv
 import os
+from werkzeug.utils import import_string
 
 from flask_login import LoginManager
 
@@ -17,10 +18,10 @@ def page_not_found(e):
 def init_app():
     """Initialize the core application."""
     app = Flask(__name__, instance_relative_config=True)
-    UPLOAD_FOLDER = '/home/arenas/Escritorio/tesis/application/static/uploads'
-    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    cfg = import_string('config.DevelopmentConfig')()
+    app.config.from_object(cfg)    
     
-    app.config.from_object('config.DevConfig')
+    
     
     # Initialize Plugins
     db.init_app(app)

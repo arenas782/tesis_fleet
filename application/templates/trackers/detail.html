@@ -23,7 +23,7 @@
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
   <!-- Daterange picker -->
-
+ 
 
 {% endblock stylesheets %}
 
@@ -53,37 +53,111 @@
         <!-- Main row -->
         <div class="row">
           <!-- Left col -->
-          <div class="col-md-5   col-sm-12 ">
+          <div class="col-md-6   col-sm-12 ">
             <div class="card card-primary card-outline">
                 <div class="card-body box-profile">
-                  <div class="text-center">
-                  
-                  </div>
-  
-                  
+                                    
                   <h3 class="profile-username text-center">                    
                     {{tracker.imei}} / {{tracker.phone}}                                        
-                  </h3>
-  
+                  </h3>  
                   <p class="text-muted text-center">
                     {%if tracker.vehicle != None%}
                     Vehículo: <a href="{{url_for('vehicles_bp.detail',id=tracker.vehicle.id)}}">{{tracker.vehicle.brand.name}} {{tracker.vehicle.model}} {{tracker.vehicle.year}}</a>
-                    {%else%}
-                    Sin vehículo asignado
+                      {%else%}
+                      Sin vehículo asignado
                     {%endif%}                                        
                   </p>
-
-                  <ul class="list-group list-group-unbordered mb-3">                    
-                        
+                  {% if last_sent_commands.count() > 0  %}
+                  
+                    <table class="table table-hover ">
+                      <p >Últimos comandos enviados</p>
+                      <thead>
+                          <tr>
+                            <th>Comando</th>
+                            <th>Status</th>                          
+                            <th>Fecha</th>                              
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {%for command in last_sent_commands%}
+                            <tr>
+                              
+                              <td>
+                                {{command.commands.description}}
+                              </td>
+                              
+                              <td>
+                                <span class="right badge badge-{%if command.status=='pending'%}warning{%else%}success{%endif%}">{{command.status}}</span>
+                              </td>
+                                
+                              
+                              <td>
+                                {{command.created_at}}
+                              </td>                                  
+                            </tr>                                                                                                                          
+                          {%endfor%}                    
+                      </tbody>
+                    </table>  
                     
-                  </ul>
-  
+                    {%else%}                  
+                      Sin comandos enviados<br>
+                  {%endif%}    
                   <a href="{{url_for('trackers_bp.edit',id=tracker.id)}}" class="btn btn-primary "><b>Editar</b></a>
-                  <a href="{{url_for('trackers_bp.commands',id=tracker.id)}}" class="btn btn-primary float-right"><b>Enviar comandos</b></a>
+                    <a href="{{url_for('trackers_bp.commands',id=tracker.id)}}" class="btn btn-primary float-right "><b>Enviar comandos</b></a>    
                 </div>
                 <!-- /.card-body -->
               </div>      
+              
           </div>
+          <div class="col-md-6   col-sm-12 ">
+            <div class="card card-primary card-outline">
+                <div class="card-body box-profile">
+                  <div class="text-center">                
+                  </div>                    
+                  <h3 class="profile-username text-center">                    
+                    Últimos logs recibidos
+                  </h3>  
+                  <p class="text-muted text-center">
+                    {%if tracker_logs.count() > 0 %}
+                    <div class="card-body table-responsive p-0">
+                      <table class="table table-hover ">
+                          <thead>
+                              <tr>
+                                <th>Evento</th>
+                                <th>Posicion</th>
+                                <th>Fecha</th>                              
+                              </tr>
+                          </thead>
+                          <tbody>
+                              {%for log in tracker_logs%}
+                                <tr>
+                                  
+                                  <td>
+                                    {{log.event}}
+                                  </td>
+                                  <td>
+                                    {{log.latitude}}/{{log.longitude}}
+                                  </td>
+                                  <td>
+                                    {{log.date}}
+                                  </td>                                  
+                                </tr>                                                                                                                          
+                              {%endfor%}                    
+                          </tbody>
+                      </table>
+                  </div>        
+                  <a href="{{url_for('trackers_bp.edit',id=tracker.id)}}" class="btn btn-primary float-right"><b>Ver registro</b></a>
+                                    
+                      {%else%}
+                        Sin logs registrados
+                    {%endif%}                                        
+                  </p>
+                 
+  
+                  
+                </div>
+                <!-- /.card-body -->
+            </div>      
 
           <div class="col-7 ">
             
@@ -126,4 +200,5 @@
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
   <!-- AdminLTE for demo purposes -->
 
+ 
 {% endblock javascripts %}

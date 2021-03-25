@@ -79,7 +79,8 @@
                         <td>{{tracker.phone}}</td>
                         <td>{{tracker.protocol.name}}</td>
                         <td>{% if tracker.vehicle != None %}<a  href="{{url_for('vehicles_bp.detail',id=tracker.vehicle.id)}}"> {{tracker.vehicle.brand.name}} {{tracker.vehicle.model}} {{tracker.vehicle.year}}</a> {%else%}<span class="right badge badge-danger">Sin asignar</span>{%endif%}</td>                        
-                        <td><a  href="{{url_for('trackers_bp.detail',id=tracker.id)}}"><i class="icon fas fa-eye"></i></a>
+                        <td><a  href="{{url_for('trackers_bp.maps',id=tracker.id)}}"><i class="icon fas fa-map-marked-alt"></i></a>
+                            <a  href="{{url_for('trackers_bp.detail',id=tracker.id)}}"><i class="icon fas fa-eye"></i></a>
                             <a  href="{{url_for('trackers_bp.edit',id=tracker.id)}}"><i class="icon fas fa-edit"></i></a>
                             <a onclick="confirmation(event)" href="{{url_for('trackers_bp.delete',id=tracker.id)}}"><i class="icon fas fa-trash"></i></a>
                         </td>                                    

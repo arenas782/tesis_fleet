@@ -1,0 +1,238 @@
+
+
+{% extends "layouts/base.html" %}
+
+{% block title %} Trackers {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  
+  <link rel="stylesheet" href="/static/assets/plugins/sweetalert2/sweetalert2.min.css">
+
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">  
+
+ 
+
+  <script src="/static/assets/plugins/mapbox/mapbox.js"></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+
+  <style>
+      #mapid { height: 180px; }
+      .marker {
+  background-image: url('/static/assets/img/pin-default.png');
+  background-size: cover;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.marker-alert {
+  background-image: url('/static/assets/img/pin-alert.png');
+  background-size: cover;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+  </style>
+
+{% endblock stylesheets %}
+
+{% block content %}
+  
+  <div class="content-wrapper">
+
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Trackers</h1>                        
+          </div><!-- /.col -->
+          
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        
+        <!-- /.row -->
+        <!-- Main row -->
+        <div class="row">
+          <!-- Left col -->
+
+          <div class="col-12 col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Mapa del dispositivo</h3>
+                
+                  </div>
+                <div class="card-body table-responsive p-2">
+
+                    <div id='map' style=' height: 400px;'></div>            
+                </div>
+                <div class=card-footer">
+                    
+                </div>
+            </div>
+            
+          </div>         
+          <div class="col-12 col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Acciones</h3>
+                
+                  </div>
+                <div class="card-body table-responsive p-4">
+                    <form method="GET" >
+                        <div class="row">
+                            <div class="form-group col-md-4"> 
+                                <label for="exampleInputEmail1">Fecha</label>
+                                <input type="text" name="daterange" value="01/01/2018 - 01/15/2018" />
+                              </div>                          
+                                                           
+                        </div>                                        
+                    
+                </div>
+                <div class=card-footer">
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                      </div>
+                    </form>
+                </div>
+            </div>
+            
+          </div>         
+          <!-- right col -->
+        </div>
+        <!-- /.row (main row) -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- jQuery UI 1.11.4 -->
+  <script src="/static/assets/plugins/jquery-ui/jquery-ui.min.js"></script>
+  <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  
+  
+
+  <script src="/static/assets/plugins/sweetalert2/sweetalert2.min.js"></script>
+  <script src="/static/assets/js/utils.js"></script>
+
+   
+
+
+  {% with messages = get_flashed_messages(with_categories=true)%}
+    {% if messages %}
+      {% for category,message in messages%}
+        <script>
+          Toast.fire({
+            icon: '{{category}}',
+            title: '{{message}}'
+            })
+        </script>                  
+      {% endfor%}
+    {% endif %}
+  {% endwith %}  
+
+  <script>
+
+
+$(function() {
+    $('input[name="daterange"]').daterangepicker({
+    
+    startDate: moment().format('YYYY/MM/DD'),    // 3/24/2021,
+    
+    locale: {
+      format: 'YYYY/MM/DD '
+    }
+  });
+
+  $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
+      $(this).val('');
+  });
+});
+
+
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoiYXJlbmFzNzgiLCJhIjoiY2tkNmU4emlqMDFnYTJybHY4bTZjNzl1byJ9.FBnIcsU1Bxyb7Ew4KBeqhw';
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [-65.32058766686754,9.34288405981329], // starting position [lng, lat]
+        zoom: 13 // starting zoom
+    });
+
+    map.on('load',function(){
+        {%for marker in markers%}
+            var el = document.createElement('div');
+            el.className = detectMarkerType('{{marker.event}}');
+
+            var popup = new mapboxgl.Popup({ offset: 25 }).setText('{{marker.event}} - {{marker.date.strftime("%d/%m/%Y %H:%M:%S")}}');
+
+            new mapboxgl.Marker(el)
+            .setLngLat([{{marker.longitude}},{{marker.latitude}}])
+            .setPopup(popup)
+            .addTo(map);
+        {%endfor%}
+    
+        
+    });
+
+    function detectMarkerType(event){
+        switch (event){
+            case 'Posición':
+                return 'marker';
+            case 'Alarma puerta':
+                return 'marker-alert';
+            default :
+                return 'marker';
+        }
+    }
+
+
+  </script>
+
+  <!-- Bootstrap 4 -->
+
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  
+
+  
+  <!-- overlayScrollbars -->
+  <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+  <!-- AdminLTE App -->
+
+
+{% endblock javascripts %}
