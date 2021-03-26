@@ -1,2 +1,5 @@
 venv/ 
 static/uploads
+__pycache__/
+config.py
+
