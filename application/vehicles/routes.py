@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 import os
 
 from .. import login_manager
-from ..models import Vehicle,VehicleBrand,Driver
+from ..models import Vehicle,VehicleBrand,Driver,VehicleType,VehicleStatus
 from ..utils import role_required   
 from ..models import db
 from flask_login import login_required, logout_user, current_user, login_user, logout_user
@@ -52,7 +52,7 @@ def detail(id):
 @vehicles_bp.route('/add', methods=["GET", "POST"])
 def add():
     if (request.method=='POST'):
-            ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+            ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 
             newVehicle = Vehicle(plate=request.values.get('plate'),
@@ -60,6 +60,7 @@ def add():
                             brand_id=request.values.get('brand_id'),
                             driver_id=request.values.get('driver_id') or None,
                             model=request.values.get('model'),
+                            vehicle_type_id=request.values.get('vehicle_type_id'),
                             year=request.values.get('year'))
             file = request.files['photo']
             if file:
@@ -80,12 +81,17 @@ def add():
         #select only drivers witouth assigned vehicle
         drivers = db.engine.execute("select * from drivers where id not in (select driver_id from vehicles where driver_id is not null)")
         brands = VehicleBrand.query.all()
+        vehicles_types = VehicleType.query.all()
+        vehicles_status = VehicleStatus.query.all()
+
         
         return render_template(
             'vehicles/add-form.html',
             brands = brands,
             drivers = drivers,
+            vehicles_status = vehicles_status,
             segment = 'vehicles',    
+            vehicles_types = vehicles_types,
             current_user = current_user
         )   
 
@@ -101,6 +107,9 @@ def edit(id):
         vehicle.brand_id=request.values.get('brand_id')
         vehicle.driver_id=request.values.get('driver_id') or None
         vehicle.year=request.values.get('year')
+        vehicle.vehicle_type_id = request.values.get('vehicle_type_id'),
+        vehicle.vehicle_status_id = request.values.get('vehicle_status_id'),
+
         db.session.commit()
         flash('Datos modificados','success')
         return redirect(url_for('vehicles_bp.home'))    
@@ -110,11 +119,16 @@ def edit(id):
         else:
             drivers = db.engine.execute("select * from drivers where id not in (select driver_id from vehicles where driver_id is not null )")
         
+        vehicles_types = VehicleType.query.all()
+        vehicles_status = VehicleStatus.query.all()
+
         return render_template(
             'vehicles/edit-form.html',
             brands = brands,
             drivers = drivers,
             segment = 'vehicles',    
+            vehicles_status = vehicles_status,
+            vehicles_types = vehicles_types,
             vehicle = vehicle,
             current_user = current_user
         )   

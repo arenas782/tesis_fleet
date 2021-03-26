@@ -124,13 +124,25 @@
               <h3 class="card-title">Gráficas</h3>              
             </div>
             <div class="card-body">
-              <div class="col-lg-6">
-                <canvas id="maintenancesChart"></canvas>
+              <div class="row">
+                <div class="col-lg-6">
+                  <canvas id="maintenancesChart"></canvas>
+                </div>
+                <div class="col-lg-6 ">
+                  <canvas id="vehicleStatusChart"></canvas>
+                </div>
+                
               </div>
+              <div class="row">
+                <div class="col-lg-8 offset-md-2" >
+                  <canvas id="vehicleTypesChart"></canvas>
+                </div>
+              </div>
+              
               
             </div>
             <div class="card-footer">
-              footer
+              footer 
             </div>
           </div>  
           
@@ -190,7 +202,104 @@
 
   }
 });
+
+
+
+
+
+
+var ctx2 = document.getElementById('vehicleStatusChart').getContext('2d');
+
+    var newLabels=[];
+    var newData=[];
+    {% for header in vehicles_per_status%}
+      newLabels.push('{{header[0]}}')
+      newData.push('{{header[1]}}')
+    {%endfor%}
+
+    var myChart2 = new Chart(ctx2, {
+      type: 'pie',
+  data: {
+    labels: newLabels,
+    datasets: [{
+      label: 'Vehiculos por status',
+      data:newData,
+      backgroundColor: [
+        'rgba(0, 121, 107, 0.9)',
+        'rgba(121, 85, 72, 0.9)',
+        
+        'rgba(255, 193,7, 0.9)',
+        'rgba(255, 138, 101, 0.9)',
+        
+        
+        
+        
+      ],
+      
+      borderWidth: 2
+    }]
+  },
+  options: {
+   	//cutoutPercentage: 40,
+    responsive: true,
+
+  }
+});
+
   </script>
+
+
+  <script>    
+    var ctx = document.getElementById("vehicleTypesChart");
+    ctx.height = "140";
+    var newLabels=[];
+    var newData=[];
+    {% for header in vehicles_per_type%}
+      newLabels.push('{{header[0]}}')
+      newData.push('{{header[1]}}')
+    {%endfor%}
+var myChart = new Chart(ctx, {
+  type: 'bar',
+  data: {
+
+
+    labels: newLabels,
+    datasets: [{
+      label: 'Vehículos por tipo',
+      data: newData,
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.4)',
+        'rgba(54, 162, 235, 0.4)',
+        'rgba(255, 206, 86, 0.4)',
+        'rgba(75, 192, 192, 0.4)',
+        'rgba(153, 102, 255, 0.4)',
+        'rgba(255, 159, 64, 0.4)',
+        'rgba(255, 99, 132, 0.4)',
+        'rgba(54, 162, 235, 0.4)',
+        
+      ],
+      borderColor: [
+        'rgba(255,99,132,1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)',
+        'rgba(255,99,132,1)',
+        'rgba(54, 162, 235, 1)',
+        
+      ],
+      borderWidth: 1
+    }]
+  },
+  
+  options: {
+    responsive: true,
+    
+  }
+});
+    
+    </script>
 
   {% with messages = get_flashed_messages(with_categories=true)%}
     {% if messages %}

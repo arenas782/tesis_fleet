@@ -126,7 +126,28 @@
                                 {%endfor%}                                                  
                               </select>
                           </div>
-                    </div>                                                      
+                    </div>  
+                    <div class="row">
+                      <div class="form-group col-md-4">
+                        <label for="brands-select">Tipo de vehículo</label>
+                        <select  id="vehicle-type-select" name="vehicle_type_id" class="form-control select2 select2-hidden-accessible" style="width: 100%" >
+                            <option></option>
+                            {%for type in vehicles_types%}        
+                           
+                            <option value="{{type.id}}" {% if vehicle.vehicle_type_id==type.id%} selected="selected"{%endif%} >{{type.description}} </option>
+                            {%endfor%}                                                  
+                        </select>
+                      </div>
+                      <div class="form-group col-md-4" >
+                        <label for="brands-select">Status</label>
+                        <select  id="status-select" name="vehicle_status_id" class="form-control select2 select2-hidden-accessible" style="width: 100%" >
+                            <option></option>
+                            {%for status in vehicles_status%}        
+                              <option value="{{status.id}}" {% if vehicle.vehicle_status_id==status.id%} selected="selected"{%endif%} >{{status.name}} </option>
+                            {%endfor%}                                                  
+                        </select>
+                      </div>                                                                                                         
+                    </div>                                                    
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
@@ -167,9 +188,19 @@
             allowClear: true
 
         });
+        $('#status-select').select2({
+            placeholder: "Seleccione un status",
+            allowClear: true
+
+        });
+        
         
         $('#driver-select').select2({
             placeholder: "Seleccione un conductor",
+            allowClear: true
+        });
+        $('#vehicle-type-select').select2({
+            placeholder: "Seleccione un tipo de vehículo",
             allowClear: true
         });
     });

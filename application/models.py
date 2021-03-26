@@ -100,6 +100,11 @@ class Vehicle(Base):
     #relations
     brand_id = db.Column(db.Integer, db.ForeignKey('vehicles_brands.id'))
     brand = db.relationship('VehicleBrand')
+    vehicle_status_id = db.Column(db.Integer, db.ForeignKey('vehicles_status.id'))
+    status = db.relationship('VehicleStatus')
+    status = db.relationship('VehicleStatus')
+    vehicle_type_id = db.Column(db.Integer, db.ForeignKey('vehicles_types.id'))
+    vehicle_type = db.relationship('VehicleType')
     driver_id = db.Column(db.Integer, db.ForeignKey('drivers.id', ondelete='cascade'),nullable=True)
     driver = db.relationship('Driver')
     maintenances = db.relationship('Maintenance',cascade="all, delete-orphan")
@@ -118,6 +123,26 @@ class VehicleBrand(Base):
     
     #relations
     vehicles = db.relationship("Vehicle", backref="vehicles", lazy='dynamic')
+    
+class VehicleStatus(Base):
+    __tablename__ = 'vehicles_status'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(20), unique=True)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    
+    
+    
+    
+class VehicleType(Base):
+    __tablename__ = 'vehicles_types'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer(), primary_key=True)
+    description = db.Column(db.String(30))
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
     
     
     
