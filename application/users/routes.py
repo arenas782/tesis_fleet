@@ -88,3 +88,13 @@ def add():
             roles = roles,               
             current_user=current_user,        
         )
+
+@users_bp.route('/delete/<id>')
+def delete(id):    
+    user = User.query.get(id)
+    if user:
+        user.delete()
+        flash('Usuario eliminado','success')
+    else:
+        flash('Usuario no encontrado','error')
+    return redirect(url_for('users_bp.home'))    

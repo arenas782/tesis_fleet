@@ -58,10 +58,13 @@ def detail(id):
     )
 
 @trackers_bp.route('/delete/<id>')
-def delete(id):
+def delete(id):    
     tracker = Tracker.query.get(id)
-    tracker.delete()
-    flash('Tracker eliminado','success')
+    if tracker:
+        tracker.delete()
+        flash('Tracker eliminado','success')
+    else:
+        flash('Tracker no encontrado','error')
     return redirect(url_for('trackers_bp.home'))            
 
 @trackers_bp.route('/commands/<id>',methods=['GET','POST'])
@@ -186,9 +189,6 @@ def maps(id):
             current_user=current_user,        
         )
             
-
-
-
 
         
         

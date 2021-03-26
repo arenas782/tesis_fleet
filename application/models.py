@@ -102,7 +102,7 @@ class Vehicle(Base):
     brand = db.relationship('VehicleBrand')
     driver_id = db.Column(db.Integer, db.ForeignKey('drivers.id', ondelete='cascade'),nullable=True)
     driver = db.relationship('Driver')
-    maintenances = db.relationship('Maintenance')
+    maintenances = db.relationship('Maintenance',cascade="all, delete-orphan")
     
     
     
@@ -236,10 +236,10 @@ class Maintenance(Base):
 
     
     #relations
-    vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicles.id', ondelete='cascade'),nullable=True)
+    vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicles.id', ondelete='cascade'))
     vehicle = db.relationship('Vehicle')
 
-    comments = db.relationship('MaintenanceComment')
+    comments = db.relationship('MaintenanceComment',cascade="all, delete-orphan")
     
 
 class MaintenanceComment(Base):

@@ -81,6 +81,7 @@
                         <td>{{user.created_at.strftime('%d/%m/%Y %H:%M:%S')}}</td>
                         <td>
                           <a href="{{url_for('users_bp.edit',id=user.id)}}"><i class="icon fas fa-edit"></i></a>
+                          <a onclick="confirmation(event)" href="{{url_for('users_bp.delete',id=user.id)}}"><i class="icon fas fa-trash"></i></a>
                         </td>
                       </tr>
                     {%endfor%}

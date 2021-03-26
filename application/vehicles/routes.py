@@ -119,3 +119,12 @@ def edit(id):
             current_user = current_user
         )   
 
+@vehicles_bp.route('/delete/<id>')
+def delete(id):    
+    vehicle = Vehicle.query.get(id)
+    if vehicle:
+        vehicle.delete()
+        flash('Vehículo eliminado','success')
+    else:
+        flash('Vehículo no encontrado','error')
+    return redirect(url_for('vehicles_bp.home'))    

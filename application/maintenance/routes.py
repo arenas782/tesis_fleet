@@ -113,3 +113,12 @@ def edit(id):
                 current_user=current_user,                
             )
 
+@maintenance_bp.route('/delete/<id>')
+def delete(id):    
+    maintenance = Maintenance.query.get(id)
+    if maintenance:
+        maintenance.delete()
+        flash('Mantenimiento eliminado','success')
+    else:
+        flash('Registro no encontrado','error')
+    return redirect(url_for('maintenance_bp.home'))    

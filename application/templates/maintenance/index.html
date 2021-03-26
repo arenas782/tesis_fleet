@@ -71,6 +71,7 @@
                 <table class="table table-hover text-nowrap" id="table">
                     <thead>
                       <tr>
+                        <th>Placa</th>                       
                         <th>Vehículo</th>                       
                         <th>Conductor</th>
                         <th>Tipo de mantenimiento</th>                                           
@@ -81,11 +82,15 @@
                     <tbody>
                       {% for maintenance in maintenances.items%}
                         <tr>
-                          <td><a href="{{url_for('vehicles_bp.detail',id=maintenance.vehicle.id)}}">{{maintenance.vehicle.plate}} / {{maintenance.vehicle.brand.name}} {{maintenance.vehicle.model}}</a></td>
+                          <td><a href="{{url_for('vehicles_bp.detail',id=maintenance.vehicle.id)}}">{{maintenance.vehicle.plate}} </a></td>
+                          <td>{{maintenance.vehicle.brand.name}} {{maintenance.vehicle.model}} {{maintenance.vehicle.year}}</td>
                           <td>{%if maintenance.vehicle.driver != None%}<a href="{{url_for('drivers_bp.profile',id=maintenance.vehicle.driver.id)}}">{{maintenance.vehicle.driver.name}} {{maintenance.vehicle.driver.lastname}}</a>{%else%}<span class="right badge badge-danger">Sin asignar</span>{%endif%}</td>
                           <td><span class="right badge badge-{%if maintenance.maintenance_type=='Preventivo'%}warning{%else%}danger{%endif%}">{{maintenance.maintenance_type}}</span></td>
                           <td><span class="right badge badge-{%if maintenance.status=='Pendiente'%}danger{%else%}{%if maintenance.status=='En proceso'%}warning{%else%}success{%endif%}{%endif%}">{{maintenance.status}}</span></td>                                                                        
-                          <td><a  href="{{url_for('maintenance_bp.detail',id=maintenance.id)}}"><i class="icon fas fa-eye"></i></a></td>
+                          <td>
+                            <a  href="{{url_for('maintenance_bp.detail',id=maintenance.id)}}"><i class="icon fas fa-eye"></i></a>
+                            <a onclick="confirmation(event)" href="{{url_for('maintenance_bp.delete',id=maintenance.id)}}"><i class="icon fas fa-trash"></i></a>
+                          </td>
                         </tr>
                       {%endfor%}                    
                     </tbody>

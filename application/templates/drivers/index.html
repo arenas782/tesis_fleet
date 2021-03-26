@@ -93,6 +93,8 @@
                         <td>
                           <a href="{{url_for('drivers_bp.profile',id=driver.id)}}"><i class="icon fas fa-eye"></i></a>
                           <a href="{{url_for('drivers_bp.edit',id=driver.id)}}"><i class="icon fas fa-edit"></i></a>
+                          <a onclick="confirmation(event)" href="{{url_for('drivers_bp.delete',id=driver.id)}}"><i class="icon fas fa-trash"></i></a>
+
                         </td>                                    
                       </tr>
                     {%endfor%}                    
