@@ -3,7 +3,7 @@ from flask import current_app as app
 from ..models import db, User
 from .. import login_manager
 from ..utils import role_required   
-from ..models import Driver,Vehicle,Tracker,User
+from ..models import Driver,Vehicle,Tracker,User,Maintenance
 from flask_login import login_required, logout_user, current_user
 # Blueprint Configuration
 home_bp = Blueprint(
@@ -23,25 +23,24 @@ def before_request():
 
 @home_bp.route('/')
 def dashboard():
+    maintenances_pending = Maintenance.query.filter_by(status="Pendiente").count()
+    maintenances_inprocess = Maintenance.query.filter_by(status="En proceso").count()
+    maintenances_completed = Maintenance.query.filter_by(status="Completado").count()
+    maintenances_stats = [maintenances_pending,maintenances_inprocess,maintenances_completed]
     total_drivers = Driver.query.count()
     total_vehicles = Vehicle.query.count()
     total_trackers = Tracker.query.count()
+
     total_users = User.query.count()
     return render_template(
         'index.html',        
         segment = 'dashboard',
+        maintenances_stats = maintenances_stats,
         total_drivers = total_drivers,
         total_vehicles = total_vehicles,
         total_trackers = total_trackers,
         total_users = total_users,
         current_user=current_user,        
-    )
-
-@home_bp.route('/reports')
-def reports():
-    return render_template(
-        'reports.html',
-        current_user=current_user
     )
 
 

@@ -119,6 +119,20 @@
         <!-- Main row -->
         <div class="row">
           <!-- Left col -->
+          <div class="card col-lg-12 ">
+            <div class="card-header">
+              <h3 class="card-title">Gráficas</h3>              
+            </div>
+            <div class="card-body">
+              <div class="col-lg-6">
+                <canvas id="maintenancesChart"></canvas>
+              </div>
+              
+            </div>
+            <div class="card-footer">
+              footer
+            </div>
+          </div>  
           
          
           <!-- right col -->
@@ -148,6 +162,35 @@
   <!-- ChartJS -->
   <script src="/static/assets/plugins/sweetalert2/sweetalert2.min.js"></script>
   <script src="/static/assets/js/utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+  <script>
+    var ctx = document.getElementById('maintenancesChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+      type: 'doughnut',
+  data: {
+    labels: ['Pendientes', 'En proceso', 'Completados'],
+    datasets: [{
+      label: '# of Tomatoes',
+      data: [{{maintenances_stats[0]}}, {{maintenances_stats[1]}}, {{maintenances_stats[2]}}],
+      backgroundColor: [
+        
+        'rgba(220, 53, 69, 0.9)',
+        'rgba(255, 193,7, 0.9)',
+        'rgba(4, 167, 69, 0.9)',
+        
+      ],
+      
+      borderWidth: 2
+    }]
+  },
+  options: {
+   	//cutoutPercentage: 40,
+    responsive: true,
+
+  }
+});
+  </script>
 
   {% with messages = get_flashed_messages(with_categories=true)%}
     {% if messages %}
