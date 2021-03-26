@@ -4,6 +4,7 @@ from os import environ, path
 from dotenv import load_dotenv
 import os
 from werkzeug.utils import import_string
+from config import config_by_name
 
 from flask_login import LoginManager
 
@@ -18,8 +19,9 @@ def page_not_found(e):
 def init_app():
     """Initialize the core application."""
     app = Flask(__name__, instance_relative_config=True)
-    cfg = import_string('config.DevelopmentConfig')()
-    app.config.from_object(cfg)    
+    config_name = 'dev'
+    app.config.from_object(config_by_name[config_name])
+
     
     
     
