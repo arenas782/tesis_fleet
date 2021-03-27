@@ -82,7 +82,7 @@ def commands(id):
         
     else:
 
-        rows_per_page = 10
+        rows_per_page = 15
         page = request.args.get('page', 1, type=int)
         tracker = Tracker.query.get(id)
         protocol = TrackerProtocol.query.get(tracker.protocol.id)
@@ -163,6 +163,30 @@ def edit(id):
                 segment = 'trackers',                
                 current_user=current_user,                
             )
+
+@trackers_bp.route('logs/<id>')
+def logs(id):
+    tracker = Tracker.query.get(id)
+    today = date.today()
+    rows_per_page = 15
+    page = request.args.get('page', 1, type=int)
+    d1 = today.strftime("%Y-%m-%d")
+    newdate  = request.args.get('daterange')
+    logs = []
+    if tracker:    
+        if newdate:            
+            newdate=newdate.split('-')
+            logs = TrackerLog.query.filter_by(tracker_id=tracker.id).filter(TrackerLog.date.between(newdate[0],newdate[1])).order_by(TrackerLog.created_at.desc())
+        else:
+            logs = TrackerLog.query.filter_by(tracker_id=tracker.id).filter_by(date=d1).order_by(TrackerLog.created_at.desc())
+    return render_template(
+        'trackers/logs.html',        
+        logs = logs,
+        segment = 'trackers',
+        tracker = tracker,                
+        current_user=current_user,                
+    )
+
 
 
 @trackers_bp.route('/maps/<id>')

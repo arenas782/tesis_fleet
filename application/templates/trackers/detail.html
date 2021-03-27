@@ -65,7 +65,9 @@
                     Vehículo: <a href="{{url_for('vehicles_bp.detail',id=tracker.vehicle.id)}}">{{tracker.vehicle.brand.name}} {{tracker.vehicle.model}} {{tracker.vehicle.year}}</a>
                       {%else%}
                       Sin vehículo asignado
-                    {%endif%}                                        
+                    {%endif%}                
+                    <br><a href="{{url_for('trackers_bp.edit',id=tracker.id)}}" class="btn btn-primary "><b>Editar tracker</b></a>
+                        
                   </p>
                   {% if last_sent_commands.count() > 0  %}
                   
@@ -102,7 +104,6 @@
                     {%else%}                  
                       Sin comandos enviados<br>
                   {%endif%}    
-                  <a href="{{url_for('trackers_bp.edit',id=tracker.id)}}" class="btn btn-primary "><b>Editar</b></a>
                     <a href="{{url_for('trackers_bp.commands',id=tracker.id)}}" class="btn btn-primary float-right "><b>Enviar comandos</b></a>    
                 </div>
                 <!-- /.card-body -->
@@ -146,7 +147,7 @@
                           </tbody>
                       </table>
                   </div>        
-                  <a href="{{url_for('trackers_bp.edit',id=tracker.id)}}" class="btn btn-primary float-right"><b>Ver registro</b></a>
+                  <a href="{{url_for('trackers_bp.logs',id=tracker.id)}}" class="btn btn-primary float-right "><b>Ver registros</b></a>
                                     
                       {%else%}
                         Sin logs registrados

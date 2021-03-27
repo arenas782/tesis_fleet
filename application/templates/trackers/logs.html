@@ -85,15 +85,35 @@
           <div class="col-12 col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Mapa del dispositivo</h3>
+                    <h3 class="card-title">Logs del dispositivo</h3>
                 
                   </div>
                 <div class="card-body table-responsive p-2">
-
-                    <div id='map' style=' height: 400px;'></div>            
+                    
+                    <table class="table table-hover text-nowrap">
+                        <thead>
+                          <tr>
+                            <th>Evento</th>
+                            <th>Latitud / Longitud</th>                      
+                            <th>Fecha</th>                      
+                            
+                            
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for log in logs%}
+                            <tr>
+                              <td>{{log.event}}</td>
+                              <td>{{log.latitude}} / {{log.longitude}}</td>                      
+                              <td>{{log.date}}</td>                                                                                            
+                              
+                            </tr>
+                          {%endfor%}                    
+                        </tbody>
+                      </table>
                 </div>
                 <div class=card-footer">
-                    
+                                                    
                 </div>
             </div>
             
@@ -105,11 +125,12 @@
                 
                   </div>
                 <div class="card-body table-responsive p-4">
+                    
                     <form method="GET" >
                         <div class="row">
                             <div class="form-group col-md-4"> 
                                 <label for="exampleInputEmail1">Fecha</label>
-                                <input type="text" name="daterange" value="01/01/2018 - 01/15/2018" />
+                                <input type="text" name="daterange"/>
                               </div>                                                                                     
                         </div>                                                            
                 </div>
@@ -184,40 +205,8 @@ $(function() {
 
 
 
-    mapboxgl.accessToken = 'pk.eyJ1IjoiYXJlbmFzNzgiLCJhIjoiY2tkNmU4emlqMDFnYTJybHY4bTZjNzl1byJ9.FBnIcsU1Bxyb7Ew4KBeqhw';
-    var map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: [-65.32058766686754,9.34288405981329], // starting position [lng, lat]
-        zoom: 13 // starting zoom
-    });
 
-    map.on('load',function(){
-        {%for marker in markers%}
-            var el = document.createElement('div');
-            el.className = detectMarkerType('{{marker.event}}');
 
-            var popup = new mapboxgl.Popup({ offset: 25 }).setText('{{marker.event}} - {{marker.date.strftime("%d/%m/%Y %H:%M:%S")}}');
-
-            new mapboxgl.Marker(el)
-            .setLngLat([{{marker.longitude}},{{marker.latitude}}])
-            .setPopup(popup)
-            .addTo(map);
-        {%endfor%}
-    
-        
-    });
-
-    function detectMarkerType(event){
-        switch (event){
-            case 'Posición':
-                return 'marker';
-            case 'Alarma puerta':
-                return 'marker-alert';
-            default :
-                return 'marker';
-        }
-    }
 
 
   </script>

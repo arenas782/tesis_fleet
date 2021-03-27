@@ -29,7 +29,7 @@ def before_request():
 
 @drivers_bp.route('/')
 def home():
-    rows_per_page = 3
+    rows_per_page = 15
     page = request.args.get('page', 1, type=int)
     query = request.args.get('query')
     if query:        
