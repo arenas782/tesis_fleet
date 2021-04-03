@@ -40,6 +40,8 @@ def home():
     return render_template(
         'maintenance/index.html',                
         maintenances = maintenances,
+        status = status,
+        query=query,
         current_user=current_user,        
         segment = 'maintenance'
     )

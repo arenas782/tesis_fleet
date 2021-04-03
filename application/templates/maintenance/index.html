@@ -121,23 +121,23 @@
               <div class="card-footer ">  
                 {% if maintenances.items|length > 0%}
                 <div class="text-right">
-                    <a href="{{ url_for('maintenance_bp.home', page=maintenances.prev_num) }}" class="btn btn-outline-dark  {% if maintenances.page == 1 %}disabled{% endif %}">
+                    <a href="{{ url_for('maintenance_bp.home', page=maintenances.prev_num,query=query,maintenance_status=status) }}" class="btn btn-outline-dark  {% if maintenances.page == 1 %}disabled{% endif %}">
                       <i class="fas fa-chevron-left"></i>
                     </a>
                     {% for page_num in maintenances.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}{% if page_num %}
                       {% if maintenances.page == page_num %}
-                        <a href="{{ url_for('maintenance_bp.home' ,page=page_num) }}" class="btn btn-dark">
+                        <a href="{{ url_for('maintenance_bp.home' ,page=page_num,query=query,maintenance_status=status) }}" class="btn btn-dark">
                           {{ page_num }}
                         </a>
                         {% else %}
-                          <a href="{{ url_for('maintenance_bp.home',page=page_num) }}" class="btn btn-outline-dark">
+                          <a href="{{ url_for('maintenance_bp.home',page=page_num,query=query,maintenance_status=status) }}" class="btn btn-outline-dark">
                           {{ page_num }}
                           </a>
                       {% endif %}
                       {% else %}          
                       {% endif %}
                     {% endfor %} 
-                    <a href="{{ url_for('maintenance_bp.home',page=maintenances.next_num) }}" class="btn btn-outline-dark {% if maintenances.page == maintenances.pages %}disabled{% endif %}">
+                    <a href="{{ url_for('maintenance_bp.home',page=maintenances.next_num,query=query,maintenance_status=status) }}" class="btn btn-outline-dark {% if maintenances.page == maintenances.pages %}disabled{% endif %}">
                       <i class="fas fa-chevron-right"></i>
                     </a>
                   </div>
