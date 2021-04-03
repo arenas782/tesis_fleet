@@ -25,7 +25,7 @@ def before_request():
 
 @vehicles_bp.route('/')
 def home():
-    rows_per_page = 15
+    rows_per_page = 2
     page = request.args.get('page', 1, type=int)
     query = request.args.get('query')
     if query:        
@@ -35,6 +35,7 @@ def home():
     return render_template(
         'vehicles/index.html',        
         segment = 'vehicles',
+        query = query,
         vehicles = vehicles,
         current_user=current_user,        
     )
