@@ -26,12 +26,17 @@ def home():
     rows_per_page = 15
     page = request.args.get('page', 1, type=int)
     query = request.args.get('query')
+    status = request.args.get('maintenance_status')
+    maintenances = Maintenance.query
 
     if query:        
-        maintenances = Maintenance.query.join(Vehicle).filter(Vehicle.plate.like('%'+query+'%')).order_by(Maintenance.created_at.desc()).paginate(page=page,per_page=rows_per_page)    
-        
-    else:        
-        maintenances = Maintenance.query.order_by(Maintenance.created_at.desc()).paginate(page=page,per_page=rows_per_page)
+        maintenances = maintenances.join(Vehicle).filter(Vehicle.plate.like('%'+query+'%'))
+    if status:
+        maintenances = maintenances.filter(Maintenance.status==status)
+
+
+
+    maintenances = maintenances.order_by(Maintenance.created_at.desc()).paginate(page=page,per_page=rows_per_page)
     return render_template(
         'maintenance/index.html',                
         maintenances = maintenances,

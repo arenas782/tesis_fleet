@@ -19,8 +19,9 @@
   <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-  <link rel="stylesheet" href="/static/assets/plugins/datatables/datatables.css">
-  
+
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 {% endblock stylesheets %}
 
 {% block content %}
@@ -65,7 +66,21 @@
                             <label for="exampleInputEmail1">Búsqueda por vehículo</label>
                             <input type="text" class="form-control"  name="query" placeholder="Placa    " >
                         </div>
+                        <div class="form-group col-md-3"> 
+                          <label for="brands-select">Status</label>
+                            <select  id="status-select" name="maintenance_status" class="form-control select2 select2-hidden-accessible" style="width: 100%" >
+                                <option></option>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="En proceso">En proceso</option>
+                                <option value="Completado">Completado</option>
+                                
+                            </select>
+                        </div>  
+                        <div class="form-group col-md-3"> 
+                          <button type="submit" class="btn btn-primary">Buscar</button>
+                        </div>
                     </div>
+
                   </form>
                 {% if maintenances.items|length > 0%}
                 <table class="table table-hover text-nowrap" id="table">
@@ -73,9 +88,9 @@
                       <tr>
                         <th>Placa</th>                       
                         <th>Vehículo</th>                       
-                        <th>Conductor</th>
                         <th>Tipo de mantenimiento</th>                                           
                         <th>Status</th>
+                        <th>Fecha</th>
                         <th>Acciones</th>                      
                       </tr>
                     </thead>
@@ -84,9 +99,9 @@
                         <tr>
                           <td><a href="{{url_for('vehicles_bp.detail',id=maintenance.vehicle.id)}}">{{maintenance.vehicle.plate}} </a></td>
                           <td>{{maintenance.vehicle.brand.name}} {{maintenance.vehicle.model}} {{maintenance.vehicle.year}}</td>
-                          <td>{%if maintenance.vehicle.driver != None%}<a href="{{url_for('drivers_bp.profile',id=maintenance.vehicle.driver.id)}}">{{maintenance.vehicle.driver.name}} {{maintenance.vehicle.driver.lastname}}</a>{%else%}<span class="right badge badge-danger">Sin asignar</span>{%endif%}</td>
                           <td><span class="right badge badge-{%if maintenance.maintenance_type=='Preventivo'%}warning{%else%}danger{%endif%}">{{maintenance.maintenance_type}}</span></td>
                           <td><span class="right badge badge-{%if maintenance.status=='Pendiente'%}danger{%else%}{%if maintenance.status=='En proceso'%}warning{%else%}success{%endif%}{%endif%}">{{maintenance.status}}</span></td>                                                                        
+                          <td>{{maintenance.created_at.strftime('%d/%m/%Y %H:%M:%S')}}</td>
                           <td>
                             <a  href="{{url_for('maintenance_bp.detail',id=maintenance.id)}}"><i class="icon fas fa-eye"></i></a>
                             <a onclick="confirmation(event)" href="{{url_for('maintenance_bp.delete',id=maintenance.id)}}"><i class="icon fas fa-trash"></i></a>
@@ -156,9 +171,14 @@
   <script src="/static/assets/plugins/jquery-ui/jquery-ui.min.js"></script>
   <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
   <script>
-    $(document).ready( function () {
-      
-    } );
+ $(document).ready(function() {
+        
+        
+        $('#status-select').select2({
+            placeholder: "Seleccione un status de mantenimiento",
+            allowClear: true
+        });
+    });
     $.widget.bridge('uibutton', $.ui.button)
   </script>
   <!-- Bootstrap 4 -->
@@ -184,7 +204,7 @@
   <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
   <!-- AdminLTE App -->
   <script src="/static/assets/js/adminlte.js"></script>
-  <script type="text/javascript" charset="utf8" src="/static/assets/plugins/datatables/datatables.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   
 
 {% endblock javascripts %}
