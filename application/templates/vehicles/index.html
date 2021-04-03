@@ -19,6 +19,8 @@
   <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
   
 {% endblock stylesheets %}
 
@@ -64,6 +66,21 @@
                           <label for="exampleInputEmail1">Búsqueda de vehículos </label>
                           <input type="text" class="form-control"  name="query" placeholder="Placa" >
                       </div>
+                      <div class="form-group col-md-3"> 
+                        <label for="brands-select">Status</label>
+                          <select  id="status-select" name="status_id" class="form-control select2 select2-hidden-accessible" style="width: 100%" >
+                              <option></option>
+                              {%for status in vehicles_status%}        
+                                  <option value="{{status.id}}">{{status.name}}</option>
+                              {%endfor%}                                                  
+                          </select>
+                      </div>  
+                      <div class="form-group col-md-3"> 
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </div>
+                      
+
+                    </div>
                   </div>
                 </form>
                 {% if vehicles.items|length > 0%}
@@ -116,23 +133,23 @@
               <div class="card-footer ">  
                 {% if vehicles.items|length > 0%}
                 <div class="text-right">
-                    <a href="{{ url_for('vehicles_bp.home', page=vehicles.prev_num,query=query) }}&{{request.query_string.decode()}}" class="btn btn-outline-dark  {% if vehicles.page == 1 %}disabled{% endif %}">
+                    <a href="{{ url_for('vehicles_bp.home', page=vehicles.prev_num,query=query,status_id=status_id) }}" class="btn btn-outline-dark  {% if vehicles.page == 1 %}disabled{% endif %}">
                       <i class="fas fa-chevron-left"></i>
                     </a>
                     {% for page_num in vehicles.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}{% if page_num %}
                       {% if vehicles.page == page_num %}
-                        <a href="{{ url_for('vehicles_bp.home' ,page=page_num,query=query) }}" class="btn btn-dark">
+                        <a href="{{ url_for('vehicles_bp.home' ,page=page_num,query=query,status_id=status_id) }}" class="btn btn-dark">
                           {{ page_num }}
                         </a>
                         {% else %}
-                          <a href="{{ url_for('vehicles_bp.home',page=page_num,query=query) }}" class="btn btn-outline-dark">
+                          <a href="{{ url_for('vehicles_bp.home',page=page_num,query=query,status_id=status_id) }}" class="btn btn-outline-dark">
                           {{ page_num }}
                           </a>
                       {% endif %}
                       {% else %}          
                       {% endif %}
                     {% endfor %} 
-                    <a href="{{ url_for('vehicles_bp.home',page=vehicles.next_num,query=query)}}" class="btn btn-outline-dark {% if vehicles.page == vehicles.pages %}disabled{% endif %}">
+                    <a href="{{ url_for('vehicles_bp.home',page=vehicles.next_num,query=query,status_id=status_id)}}" class="btn btn-outline-dark {% if vehicles.page == vehicles.pages %}disabled{% endif %}">
                       <i class="fas fa-chevron-right"></i>
                     </a>
                   </div>
@@ -166,7 +183,19 @@
   <script src="/static/assets/plugins/jquery-ui/jquery-ui.min.js"></script>
   <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
   <script>
-    $.widget.bridge('uibutton', $.ui.button)
+     
+    $(document).ready(function() {
+        
+        $('#vehicle-type-select').select2({
+            placeholder: "Seleccione un tipo de vehículo",
+            allowClear: true
+        });
+        $('#status-select').select2({
+            placeholder: "Seleccione un status de vehículo",
+            allowClear: true
+        });
+    });
+    
   </script>
   <!-- Bootstrap 4 -->
   <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -191,6 +220,8 @@
   <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
   <!-- AdminLTE App -->
   <script src="/static/assets/js/adminlte.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
   
 
 {% endblock javascripts %}
