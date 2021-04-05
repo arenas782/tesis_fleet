@@ -2,7 +2,7 @@
 
 {% extends "layouts/base.html" %}
 
-{% block title %} Trackers {% endblock %} 
+{% block title %} Logs del tracker {% endblock %} 
 
 <!-- Element injected in the BODY element -->
 {% block body_class %} sidebar-mini {% endblock body_class %} 
@@ -85,35 +85,47 @@
           <div class="col-12 col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Logs del dispositivo</h3>
-                
+                    <h3 class="card-title">Logs del dispositivo  --</h3>-  Rango de fechas: {{query[0]}} - {{query[1]}}
+
+                    {%if query%}                      
+                      <br>  
+                      <input type="hidden" name="from" id="from" value="{{query[0]}}">
+                      <input type="hidden" name="to" id="to" value="{{query[1]}}">
+                    {%endif%}
+                    
                   </div>
                 <div class="card-body table-responsive p-2">
+                  {%if logs.count() > 0%}
+                  <table class="table table-hover text-nowrap">
+                    <thead>
+                      <tr>
+                        <th>Evento</th>
+                        <th>Latitud / Longitud</th>                      
+                        <th>Fecha</th>                      
+                        
+                        
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for log in logs%}
+                        <tr>
+                          <td>{{log.event}}</td>
+                          <td>{{log.latitude}} / {{log.longitude}}</td>                      
+                          <td>{{log.date.strftime('%d/%m/%Y %H:%M:%S')}}</td>                                                                                                                          
+                        </tr>
+                      {%endfor%}                    
+                    </tbody>
+                  </table>
+                  {%else%}
+                    <p>No hay coincidencias</p>
+
+                  {%endif%}                    
                     
-                    <table class="table table-hover text-nowrap">
-                        <thead>
-                          <tr>
-                            <th>Evento</th>
-                            <th>Latitud / Longitud</th>                      
-                            <th>Fecha</th>                      
-                            
-                            
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {% for log in logs%}
-                            <tr>
-                              <td>{{log.event}}</td>
-                              <td>{{log.latitude}} / {{log.longitude}}</td>                      
-                              <td>{{log.date}}</td>                                                                                            
-                              
-                            </tr>
-                          {%endfor%}                    
-                        </tbody>
-                      </table>
                 </div>
-                <div class=card-footer">
-                                                    
+                <div class="card-footer">
+                  {%if logs.count()>0%}
+                  <a href="" id="print_button" class="btn btn-primary">Imprimir</a><br>         <p>Mostrando los últimos 10 registros.</p><p>Haga clic en imprimir para ver todos lo registros que coincidan</p>
+                  {%endif%}
                 </div>
             </div>
             
@@ -134,15 +146,18 @@
                               </div>                                                                                     
                         </div>                                                            
                 </div>
-                <div class=card-footer">
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Enviar</button>
-                      </div>
-                    </form>
+                <div class="card-footer">
+                
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                      </form>
+
+                
+                    
                 </div>
             </div>
             
           </div>         
+
           <!-- right col -->
         </div>
         <!-- /.row (main row) -->
@@ -188,15 +203,33 @@
   <script>
 
 
+
 $(function() {
+
+{%if query%}
+  var from = $("#from").val().trim();
+  var to = $("#to").val().trim();
+  $("#print_button").attr("href", "{{url_for('trackers_bp.print_logs',tracker_id=tracker.id)}}");
+  $("#print_button").attr("href", function(_, href){
+    return href+'&from='+from+'&to='+to;
+  });
+
+
+{%endif%}
+
+
+
     $('input[name="daterange"]').daterangepicker({
     
     startDate: moment().format('YYYY/MM/DD'),    // 3/24/2021,
     
     locale: {
-      format: 'YYYY/MM/DD '
+      format: 'YYYY/MM/DD'
     }
   });
+
+
+
 
   $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
       $(this).val('');

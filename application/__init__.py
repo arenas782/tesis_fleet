@@ -8,6 +8,8 @@ from config import config_by_name
 
 from flask_login import LoginManager
 
+
+
 # Globally accessible libraries
 db = SQLAlchemy()
 login_manager = LoginManager()

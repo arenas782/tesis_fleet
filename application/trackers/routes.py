@@ -186,18 +186,38 @@ def logs(id):
     if tracker:    
         if newdate:            
             newdate=newdate.split('-')
-            logs = TrackerLog.query.filter_by(tracker_id=tracker.id).filter(TrackerLog.date.between(newdate[0],newdate[1])).order_by(TrackerLog.created_at.desc())
+            logs = TrackerLog.query.filter_by(tracker_id=tracker.id).filter(TrackerLog.date.between(newdate[0],newdate[1]))
         else:
-            logs = TrackerLog.query.filter_by(tracker_id=tracker.id).filter_by(date=d1).order_by(TrackerLog.created_at.desc())
+            logs = TrackerLog.query.filter_by(tracker_id=tracker.id).filter_by(date=d1)
+        logs = logs.order_by(TrackerLog.date.desc()).limit(10)
+        
+        
+        
     return render_template(
         'trackers/logs.html',        
         logs = logs,
+        query=newdate,
+        
         segment = 'trackers',
         tracker = tracker,                
         current_user=current_user,                
     )
 
-
+@trackers_bp.route('/print_logs')
+def print_logs():
+    from flask_weasyprint import HTML, render_pdf    
+    tracker_id = request.args.get('tracker_id')
+    from_date = request.args.get('from')
+    to_date = request.args.get('to')
+    tracker = Tracker.query.get(tracker_id)
+    if tracker:
+        logs = TrackerLog.query.filter_by(tracker_id=tracker.id).filter(TrackerLog.date.between(from_date,to_date))
+        html = render_template('trackers/pdf_logs.html', logs=logs,tracker=tracker,from_date=from_date,to_date=to_date)
+        pdfname=tracker.imei+'.pdf'
+        return render_pdf(HTML(string=html))
+        #return render_template('trackers/pdf_logs.html', logs=logs,tracker=tracker,from_date=from_date,to_date=to_date)
+    else:
+        return 'error'
 
 @trackers_bp.route('/maps/<id>')
 def maps(id):
