@@ -102,7 +102,6 @@ class Vehicle(Base):
     brand = db.relationship('VehicleBrand')
     vehicle_status_id = db.Column(db.Integer, db.ForeignKey('vehicles_status.id'))
     status = db.relationship('VehicleStatus')
-    status = db.relationship('VehicleStatus')
     vehicle_type_id = db.Column(db.Integer, db.ForeignKey('vehicles_types.id'))
     vehicle_type = db.relationship('VehicleType')
     driver_id = db.Column(db.Integer, db.ForeignKey('drivers.id', ondelete='cascade'),nullable=True)

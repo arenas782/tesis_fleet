@@ -59,36 +59,76 @@
                 <a href="{{url_for('trackers_bp.add')}}" class="btn btn-primary float-right "><b>Nuevo</b></a>            
               </div>
               <!-- /.card-header -->
-              <div class="card-body table-responsive p-0">
+              <div class="card-body table-responsive p-4">
+                <form >
+                  <div class="row">
+                    <div class="form-group col-md-3"> 
+                        <label for="exampleInputEmail1">Búsqueda por IMEI</label>
+                        <input type="text" class="form-control"  name="query" placeholder="012434764302841" >
+                    </div>                  
+                    <div class="form-group col-md-3"> 
+                      <button type="submit" class="btn btn-primary">Buscar</button>
+                    </div>
+                  </div>
+                </form>
                 <table class="table table-hover text-nowrap">
                   <thead>
                     <tr>
-                      <th>ID</th>
                       <th>IMEI</th>
                       <th>Teléfono</th>
                       <th>Protocolo</th>
-                      <th>Vehículo</th>                      
-                      <th>Acciones</th>       
+                      <th>Vehículo</th>                                          
+                      <th>F. registro</th> 
+                      <th>Acciones</th>      
                     </tr>
                   </thead>
                   <tbody>                                        
-                    {%for tracker in trackers%}                      
+                    {%for tracker in trackers.items%}                      
                       <tr>
-                        <td>{{tracker.id}}</td>
                         <td>{{tracker.imei}}</td>
                         <td>{{tracker.phone}}</td>
                         <td>{{tracker.protocol.name}}</td>
                         <td>{% if tracker.vehicle != None %}<a  href="{{url_for('vehicles_bp.detail',id=tracker.vehicle.id)}}"> {{tracker.vehicle.brand.name}} {{tracker.vehicle.model}} {{tracker.vehicle.year}}</a> {%else%}<span class="right badge badge-danger">Sin asignar</span>{%endif%}</td>                        
+                        <td>{{tracker.created_at.strftime('%d/%m/%Y %H:%M:%S')}}</td>
                         <td><a  href="{{url_for('trackers_bp.maps',id=tracker.id)}}"><i class="icon fas fa-map-marked-alt"></i></a>
                             <a  href="{{url_for('trackers_bp.detail',id=tracker.id)}}"><i class="icon fas fa-eye"></i></a>
                             <a  href="{{url_for('trackers_bp.edit',id=tracker.id)}}"><i class="icon fas fa-edit"></i></a>
                             <a onclick="confirmation(event)" href="{{url_for('trackers_bp.delete',id=tracker.id)}}"><i class="icon fas fa-trash"></i></a>
-                        </td>                                    
+                        </td>                             
+                        
                       </tr>                      
                     {%endfor%}                    
                   </tbody>
                   
                 </table>
+              </div>
+              <div class="card-footer">
+                {% if trackers.items|length > 0%}
+                <div class="text-right">
+                    <a href="{{ url_for('trackers_bp.home', page=trackers.prev_num,query=query) }}" class="btn btn-outline-dark  {% if trackers.page == 1 %}disabled{% endif %}">
+                      <i class="fas fa-chevron-left"></i>
+                    </a>
+                    {% for page_num in trackers.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}{% if page_num %}
+                      {% if trackers.page == page_num %}
+                        <a href="{{ url_for('trackers_bp.home' ,page=page_num,query=query) }}" class="btn btn-dark">
+                          {{ page_num }}
+                        </a>
+                        {% else %}
+                          <a href="{{ url_for('trackers_bp.home',page=page_num,query=query) }}" class="btn btn-outline-dark">
+                          {{ page_num }}
+                          </a>
+                      {% endif %}
+                      {% else %}          
+                      {% endif %}
+                    {% endfor %} 
+                    <a href="{{ url_for('trackers_bp.home',page=trackers.next_num,query=query)}}" class="btn btn-outline-dark {% if trackers.page == trackers.pages %}disabled{% endif %}">
+                      <i class="fas fa-chevron-right"></i>
+                    </a>
+                  </div>
+                  <p class="text-right mt-3">
+                    Mostrando página {{ trackers.page }} de {{ trackers.pages }}
+                  </p>                              
+                {%endif%}                                        
               </div>
               <!-- /.card-body -->
             </div>

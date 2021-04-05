@@ -25,10 +25,20 @@ def before_request():
 
 @trackers_bp.route('/')
 def home():
-    trackers = Tracker.query.all()
+    rows_per_page = 15
+    page = request.args.get('page', 1, type=int)
+    query = request.args.get('query')
+    trackers = Tracker.query
+    if query:                
+        trackers = trackers.filter(Tracker.imei.like('%'+query+'%'))
+    else:
+        trackers = trackers
+
+    trackers=trackers.order_by(Tracker.created_at.desc()).paginate(page=page,per_page=rows_per_page)
     return render_template(
         'trackers/index.html',        
         segment = 'trackers',
+        query = query,
         trackers = trackers,        
         current_user=current_user,        
     )
