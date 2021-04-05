@@ -81,7 +81,7 @@
                     </div>
                       
 
-                    </div>
+                    
                   </div>
                 </form>
                 {% if vehicles.items|length > 0%}
@@ -130,8 +130,7 @@
                     <p>No hay coincidencias</p>
                 {%endif%}
                 
-              </div>
-              <div class="card-footer ">  
+              <div class="card-footer">  
                 {% if vehicles.items|length > 0%}
                 <div class="text-right">
                     <a href="{{ url_for('vehicles_bp.home', page=vehicles.prev_num,query=query,status_id=status_id) }}" class="btn btn-outline-dark  {% if vehicles.page == 1 %}disabled{% endif %}">

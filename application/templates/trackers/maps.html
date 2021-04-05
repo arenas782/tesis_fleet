@@ -212,7 +212,9 @@ $(function() {
         switch (event){
             case 'Posición':
                 return 'marker';
-            case 'Alarma puerta':
+            case 'Alarma puerta':            
+                return 'marker-alert';
+            case 'Desactivar motor':            
                 return 'marker-alert';
             default :
                 return 'marker';

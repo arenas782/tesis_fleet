@@ -92,7 +92,7 @@ def commands(id):
         
     else:
 
-        rows_per_page = 15
+        rows_per_page = 10
         page = request.args.get('page', 1, type=int)
         tracker = Tracker.query.get(id)
         protocol = TrackerProtocol.query.get(tracker.protocol.id)
