@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Detalles de vehículo {% endblock %} 
+{% block title %} Registro de Flota {% endblock %} 
 
 <!-- Element injected in the BODY element -->
 {% block body_class %} sidebar-mini {% endblock body_class %} 
@@ -13,18 +13,20 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
   <!-- Ionicons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- Tempusdominus Bootstrap 4 -->
-  <link rel="stylesheet" href="/static/assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-  <!-- iCheck -->
-  <!-- JQVMap -->
+  
+  
+  
+  
   <!-- Theme style -->
   <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-  <!-- Daterange picker -->
-  <link rel="stylesheet" href="/static/assets/plugins/daterangepicker/daterangepicker.css">
-  <!-- summernote -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+
+
+  
+
 
 {% endblock stylesheets %}
 
@@ -37,8 +39,9 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Detalles del vehículo</h1>
-        
+            <h1 class="m-0 text-dark">Registro de Flota</h1>
+            
+          
             
           </div><!-- /.col -->
           
@@ -56,50 +59,44 @@
         <!-- Main row -->
         <div class="row">
           <!-- Left col -->
-          <div class="col-md-5   col-sm-12 ">
-            <div class="card card-primary card-outline">
-                <div class="card-body box-profile">
-                  <div class="text-center">
-                    <img class=" img-fluid " src="{%if vehicle.photo is none%} /static/assets/img/default-car.png {%else%}/static/uploads/vehicles/{{vehicle.photo}} {%endif%}" alt="User profile picture" width=300>
-                  </div>
-  
-                  
-                  <h3 class="profile-username text-center">                    
-                    {{vehicle.brand.name}} / {{vehicle.model}}                                        
-                  </h3>
-  
-                  <p class="text-muted text-center">
-                    {%if vehicle.driver != None%}
-                    Conductor: <a href="{{url_for('drivers_bp.profile',id=vehicle.driver.id)}}">{{vehicle.driver.name}} {{vehicle.driver.lastname}}</a>
-                    {%else%}
-                    Sin conductor asignado
-                    {%endif%}                                        
-                  </p>
-
-                  <ul class="list-group list-group-unbordered mb-3">                    
-                        
-                    <li class="list-group-item">
-                      <b>Placa</b> <a class="float-right">{{vehicle.plate}}</a>
-                    </li>
-                    <li class="list-group-item">
-                      <b>Color</b> <a class="float-right">{{vehicle.color  }}</a>
-                    </li>
-                    <li class="list-group-item">
-                      <b>Año</b> <a class="float-right">{{vehicle.year  }}</a>
-                    </li>
-                    <li class="list-group-item">
-                      <b>Status</b> <a class="float-right">{{vehicle.status.name  }}</a>
-                    </li>
-                  </ul>
-  
-                  <a href="{{url_for('vehicles_bp.edit',id=vehicle.id)}}" class="btn btn-primary "><b>Editar</b></a>
+          <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Datos de la flota</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form method="POST" >
+                  <input type="hidden" name="fleet_id" value="{{fleet.id}}">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="form-group col-md-4"> 
+                            <label for="exampleInputEmail1">Nombre</label>
+                            <input type="text" class="form-control" id="imei" name="name" placeholder="Nombre de la flota" required value ="{{fleet.name}}">
+                          </div>                          
+                          <div class="form-group col-md-4">
+                            <label for="brands-select">Tipo de flota</label>
+                            <select  id="fleet-type-select" name="fleet_type_id" class="form-control select2 select2-hidden-accessible" style="width: 100%"  required>
+                                <option></option>
+                                {%for fleet_type in fleet_types%}        
+                                    <option value="{{fleet_type.id}}" {%if fleet_type.id==fleet.fleet_type_id%} selected {%endif%}>{{fleet_type.name}} </option>
+                                {%endfor%}                                                  
+                              </select>
+                          </div>                                                
+                    </div>                                        
+                    
                 </div>
                 <!-- /.card-body -->
-              </div>      
-          </div>
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">Enviar</button>
+                </div>
+              </form>
+            </div>
+            <!-- /.card -->
 
-          <div class="col-7 ">
             
+
           </div>
          
           <!-- right col -->
@@ -121,8 +118,17 @@
   <!-- jQuery UI 1.11.4 -->
   <script src="/static/assets/plugins/jquery-ui/jquery-ui.min.js"></script>
   <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+
   <script>
     $.widget.bridge('uibutton', $.ui.button)
+    $(document).ready(function() {
+        $('#fleet-type-select').select2({
+            placeholder: "Seleccione un tipo de flota",
+            allowClear: true            
+        });
+        
+        
+    });
   </script>
   <!-- Bootstrap 4 -->
   <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -139,5 +145,8 @@
   <script src="/static/assets/js/adminlte.js"></script>
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
   <!-- AdminLTE for demo purposes -->
+
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 
 {% endblock javascripts %}

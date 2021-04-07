@@ -18,14 +18,11 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 def init_app():
-    """Initialize the core application."""
+    
     app = Flask(__name__, instance_relative_config=True)
     config_name = 'dev'
-    app.config.from_object(config_by_name[config_name])
+    app.config.from_object(config_by_name[config_name])        
 
-    
-    
-    
     # Initialize Plugins
     db.init_app(app)
     login_manager.init_app(app)
@@ -40,12 +37,14 @@ def init_app():
         from .vehicles import routes
         from .trackers import routes
         from .users import routes
+        from .fleets import routes
         from .maintenance import routes
         app.register_blueprint(auth.routes.auth_bp)
         app.register_blueprint(drivers.routes.drivers_bp)
         app.register_blueprint(home.routes.home_bp)    
         app.register_blueprint(vehicles.routes.vehicles_bp)    
         app.register_blueprint(users.routes.users_bp)    
+        app.register_blueprint(fleets.routes.fleets_bp)
         app.register_blueprint(trackers.routes.trackers_bp)    
         app.register_blueprint(maintenance.routes.maintenance_bp)
         

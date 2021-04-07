@@ -89,11 +89,11 @@
                   <thead>
                     <tr>
                       <th>Placa</th>
-                      <th>Marca / Modelo</th>                      
-                      <th>Año</th>                      
-                      <th>Tipo</th>
-                      <th>Color</th>
-                      <th>Conductor</th>
+                      <th>Marca / Modelo / Año</th>                      
+                      
+                      <th>Tipo / Color</th>
+                      
+                      <th>Flota</th>
                       <th>Status</th>
                       <th>Foto</th>
                       <th>Ver</th>
@@ -104,17 +104,9 @@
                     {% for vehicle in vehicles.items%}
                       <tr>
                         <td>{{vehicle.plate}}</td>
-                        <td>{{vehicle.brand.name}} / {{vehicle.model}}</td>                      
-                        <td>{{vehicle.year}}</td>                                                                                            
-                        <td>{{vehicle.vehicle_type.description}}</td>
-                        <td>{{vehicle.color}}</td>
-                        <td>
-                          {% if vehicle.driver != None%}
-                          <a href="{{url_for('drivers_bp.profile',id=vehicle.driver.id)}}">{{vehicle.driver.name}} {{vehicle.driver.lastname}}</a>                            
-                          {% else %}
-                            <span class="right badge badge-danger">Sin asignar</span>
-                          {%endif%}
-                        </td>
+                        <td>{{vehicle.brand.name}} {{vehicle.model}} {{vehicle.year}}</td>                                                                                                                                   
+                        <td>{{vehicle.vehicle_type.description}} {{vehicle.color}}</td>                        
+                        <td>{% if vehicle.fleet %}{{vehicle.fleet.name}}{%else%} Sin flota asignada {%endif%}</td>                    
                         <td>{{vehicle.status.name}}</td>
                         <td><img class=" img-fluid " src="{%if vehicle.photo is none%} /static/assets/img/default-car.png {%else%}/static/uploads/vehicles/{{vehicle.photo}} {%endif%}" alt="Vehicle picture" width="90"></td>
                         <td>

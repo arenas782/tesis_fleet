@@ -146,7 +146,16 @@
                               <option value="{{status.id}}" {% if vehicle.vehicle_status_id==status.id%} selected="selected"{%endif%} >{{status.name}} </option>
                             {%endfor%}                                                  
                         </select>
-                      </div>                                                                                                         
+                      </div>                  
+                      <div class="form-group col-md-4">
+                        <label for="brands-select">Flota</label>
+                        <select  id="fleet-select" name="fleet_id" class="form-control select2 select2-hidden-accessible" style="width: 100%"  required>
+                            <option></option>
+                            {%for fleet in fleets%}        
+                                <option value="{{fleet.id}}" {% if vehicle.fleet_id==fleet.id%} selected="selected"{%endif%}>{{fleet.name}} </option>
+                            {%endfor%}                                                  
+                          </select>
+                      </div>                                                                                                                                       
                     </div>                                                    
                 </div>
                 <!-- /.card-body -->
@@ -185,6 +194,11 @@
     $(document).ready(function() {
         $('#brand-select').select2({
             placeholder: "Seleccione un fabricante",
+            allowClear: true
+
+        });
+        $('#fleet-select').select2({
+            placeholder: "Seleccione una flota",
             allowClear: true
 
         });

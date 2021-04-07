@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 import os
 
 from .. import login_manager
-from ..models import Vehicle,VehicleBrand,Driver,VehicleType,VehicleStatus
+from ..models import Vehicle,VehicleBrand,Driver,VehicleType,VehicleStatus,Fleet
 from ..utils import role_required   
 from ..models import db
 from flask_login import login_required, logout_user, current_user, login_user, logout_user
@@ -70,6 +70,8 @@ def add():
                             color=request.values.get('color'),
                             brand_id=request.values.get('brand_id'),
                             driver_id=request.values.get('driver_id') or None,
+                            fleet_id = request.values.get('fleet_id') or None,
+                            vehicle_status_id=request.values.get('vehicle_status_id'),
                             model=request.values.get('model'),
                             vehicle_type_id=request.values.get('vehicle_type_id'),
                             year=request.values.get('year'))
@@ -78,27 +80,27 @@ def add():
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER']+'/vehicles', filename))
                 newVehicle.photo = filename
-
-
+            
             try:
                 db.session.add(newVehicle)
                 db.session.commit()
-                flash('Nuevo vehículo registrado','success')
-                return redirect(url_for('vehicles_bp.home'))    
+                flash('Nuevo vehículo registrado','success')                
             except:
                 flash('Ha ocurrido un error','danger')
-                return redirect(url_for('vehicles_bp.home'))    
+            return redirect(url_for('vehicles_bp.home'))    
     else:
         #select only drivers witouth assigned vehicle
         drivers = db.engine.execute("select * from drivers where id not in (select driver_id from vehicles where driver_id is not null)")
         brands = VehicleBrand.query.all()
         vehicles_types = VehicleType.query.all()
+        fleets = Fleet.query.all()
         vehicles_status = VehicleStatus.query.all()
 
         
         return render_template(
             'vehicles/add-form.html',
             brands = brands,
+            fleets = fleets,
             drivers = drivers,
             vehicles_status = vehicles_status,
             segment = 'vehicles',    
@@ -120,6 +122,7 @@ def edit(id):
         vehicle.year=request.values.get('year')
         vehicle.vehicle_type_id = request.values.get('vehicle_type_id'),
         vehicle.vehicle_status_id = request.values.get('vehicle_status_id'),
+        vehicle.fleet_id = request.values.get('fleet_id') or None
 
         db.session.commit()
         flash('Datos modificados','success')
@@ -132,10 +135,12 @@ def edit(id):
         
         vehicles_types = VehicleType.query.all()
         vehicles_status = VehicleStatus.query.all()
+        fleets = Fleet.query.all()
 
         return render_template(
             'vehicles/edit-form.html',
             brands = brands,
+            fleets = fleets,
             drivers = drivers,
             segment = 'vehicles',    
             vehicles_status = vehicles_status,

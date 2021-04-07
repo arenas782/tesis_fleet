@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Listado de conductores {% endblock %} 
+{% block title %} Listado de Flotas {% endblock %} 
 
 <!-- Element injected in the BODY element -->
 {% block body_class %} sidebar-mini {% endblock body_class %} 
@@ -32,7 +32,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Conductores</h1>            
+            <h1 class="m-0 text-dark">Flotas</h1>            
             
           </div><!-- /.col -->
           
@@ -56,52 +56,45 @@
           <div class="col-12">            
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Listado de conductores</h3>
-                <a href="{{url_for('drivers_bp.add')}}" class="btn btn-primary float-right "><b>Nuevo</b></a>            
+                <h3 class="card-title">Listado de Flotas</h3>
+                <a href="{{url_for('fleets_bp.add')}}" class="btn btn-primary float-right "><b>Nueva</b></a>            
               </div>
               <!-- /.card-header -->
-              <div class="card-body table-responsive p-3">
-                <form method="GET">
-                  <div class="row">
-                      <div class="form-group col-md-3"> 
-                          <label for="exampleInputEmail1">Búsqueda de conductores </label>
-                          <input type="text" class="form-control"  name="query" placeholder="DNI / Nombres" >
-                      </div>
-                  </div>
-                </form>
-                {% if drivers.items|length > 0%}
+              <div class="card-body table-responsive p-3">                
+                {% if fleets %}
+                
                 <table class="table table-hover text-nowrap">
                   <thead>
                     <tr>
-                      <th>DNI</th>
-                      <th>Nombres</th>
-                      <th>Apellidos</th>
-                      <th>Teléfono</th> 
-                      <th>Foto</th>
+                      <th>Nombre</th>
+                      <th>Tipo</th>
+                      <th>Vehículos</th>
+                      <th>F. registro</th>                      
                       <th>Acciones</th>    
                     </tr>
                   </thead>
                   <tbody>
                     
-                    {% for driver in drivers.items%}
+                    {% for fleet in fleets%}
                       <tr>
-                        <td>{{driver.dni}}</td>
-                        <td>{{driver.name}}</td>
-                        <td>{{driver.lastname}}</td>
-                        <td>{{driver.phone}}</td>                                                      
-                        <td><img class=" img-fluid " src="{%if driver.photo is none%} /static/assets/img/default-driver.png {%else%}/static/uploads/drivers/{{driver.photo}} {%endif%}" alt="User profile picture" width=80></td>
+                        <td>{{fleet[1]}}</td>
+                        <td>{{fleet[2]}}</td>
+                        <td>{{fleet[4]}}</td>
+                        <td>{{fleet[3]}}</td>
                         <td>
-                          <a href="{{url_for('drivers_bp.profile',id=driver.id)}}"><i class="icon fas fa-eye"></i></a>
-                          <a href="{{url_for('drivers_bp.edit',id=driver.id)}}"><i class="icon fas fa-edit"></i></a>
-                          <a onclick="confirmation(event)" href="{{url_for('drivers_bp.delete',id=driver.id)}}"><i class="icon fas fa-trash"></i></a>
-                        </td>                                    
+                            <a href="{{url_for('fleets_bp.detail',id=fleet[0])}}"><i class="icon fas fa-eye"></i></a>
+                            <a href="{{url_for('fleets_bp.edit',id=fleet[0])}}"><i class="icon fas fa-edit"></i></a>
+                            <a onclick="confirmation(event)" href="{{url_for('fleets_bp.delete',id=fleet[0])}}"><i class="icon fas fa-trash"></i></a>
+  
+                          </td>    
+                        
                       </tr>
                     {%endfor%}                    
                   </tbody>
                 </table>
 
                 {%else%}
-                    <p>No hay coincidencias</p>
+                    <p>No hay flotas registradas</p>
                 {%endif%}                
               </div>
               <!-- /.card-body -->

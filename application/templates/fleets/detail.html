@@ -1,6 +1,7 @@
+
 {% extends "layouts/base.html" %}
 
-{% block title %} Detalles de vehículo {% endblock %} 
+{% block title %} Detalles de flota {% endblock %} 
 
 <!-- Element injected in the BODY element -->
 {% block body_class %} sidebar-mini {% endblock body_class %} 
@@ -23,7 +24,6 @@
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
   <!-- Daterange picker -->
-  <link rel="stylesheet" href="/static/assets/plugins/daterangepicker/daterangepicker.css">
   <!-- summernote -->
 
 {% endblock stylesheets %}
@@ -37,8 +37,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Detalles del vehículo</h1>
-        
+            <h1 class="m-0 text-dark">Detalles de la flota</h1>                  
             
           </div><!-- /.col -->
           
@@ -56,43 +55,52 @@
         <!-- Main row -->
         <div class="row">
           <!-- Left col -->
-          <div class="col-md-5   col-sm-12 ">
+          <div class="col-md-12   col-sm-12 ">
             <div class="card card-primary card-outline">
-                <div class="card-body box-profile">
-                  <div class="text-center">
-                    <img class=" img-fluid " src="{%if vehicle.photo is none%} /static/assets/img/default-car.png {%else%}/static/uploads/vehicles/{{vehicle.photo}} {%endif%}" alt="User profile picture" width=300>
-                  </div>
-  
-                  
+                <div class="card-body box-profile">                  
                   <h3 class="profile-username text-center">                    
-                    {{vehicle.brand.name}} / {{vehicle.model}}                                        
-                  </h3>
-  
-                  <p class="text-muted text-center">
-                    {%if vehicle.driver != None%}
-                    Conductor: <a href="{{url_for('drivers_bp.profile',id=vehicle.driver.id)}}">{{vehicle.driver.name}} {{vehicle.driver.lastname}}</a>
-                    {%else%}
-                    Sin conductor asignado
-                    {%endif%}                                        
-                  </p>
+                     Nombre: {{fleet.name}} /  Tipo: {{fleet.fleet_type.name}}
+                  </h3>  
+                  {% if vehicles|length > 0 %}
 
-                  <ul class="list-group list-group-unbordered mb-3">                    
-                        
-                    <li class="list-group-item">
-                      <b>Placa</b> <a class="float-right">{{vehicle.plate}}</a>
-                    </li>
-                    <li class="list-group-item">
-                      <b>Color</b> <a class="float-right">{{vehicle.color  }}</a>
-                    </li>
-                    <li class="list-group-item">
-                      <b>Año</b> <a class="float-right">{{vehicle.year  }}</a>
-                    </li>
-                    <li class="list-group-item">
-                      <b>Status</b> <a class="float-right">{{vehicle.status.name  }}</a>
-                    </li>
-                  </ul>
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>Placa</th>
+                      <th>Marca / Modelo / Año</th>                      
+                      
+                      <th>Tipo / Color</th>
+                      
+                      <th>Flota</th>
+                      <th>Status</th>
+                      <th>Foto</th>
+                      <th>Ver</th>
+                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for vehicle in vehicles%}
+                      <tr>
+                        <td>{{vehicle.plate}}</td>
+                        <td>{{vehicle.brand.name}} {{vehicle.model}} {{vehicle.year}}</td>                                                                                                                                   
+                        <td>{{vehicle.vehicle_type.description}} {{vehicle.color}}</td>                        
+                        <td>{% if vehicle.fleet %}{{vehicle.fleet.name}}{%else%} Sin flota asignada {%endif%}</td>                    
+                        <td>{{vehicle.status.name}}</td>
+                        <td><img class=" img-fluid " src="{%if vehicle.photo is none%} /static/assets/img/default-car.png {%else%}/static/uploads/vehicles/{{vehicle.photo}} {%endif%}" alt="Vehicle picture" width="90"></td>
+                        <td>
+                          <a href="{{url_for('vehicles_bp.detail',id=vehicle.id)}}"><i class="icon fas fa-eye"></i></a>
+                          <a href="{{url_for('vehicles_bp.edit',id=vehicle.id)}}"><i class="icon fas fa-edit"></i></a>
+                          <a onclick="confirmation(event)" href="{{url_for('vehicles_bp.delete',id=vehicle.id)}}"><i class="icon fas fa-trash"></i></a>
+                        </td>                                    
+                      </tr>
+                    {%endfor%}                    
+                  </tbody>
+                </table>
+                  {%else%}
+                    <p>Sin vehículos asignados</p>
+                {%endif%}
   
-                  <a href="{{url_for('vehicles_bp.edit',id=vehicle.id)}}" class="btn btn-primary "><b>Editar</b></a>
+                  <a href="{{url_for('fleets_bp.edit',id=fleet.id)}}" class="btn btn-primary "><b>Editar</b></a>
                 </div>
                 <!-- /.card-body -->
               </div>      

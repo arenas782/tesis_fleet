@@ -82,7 +82,26 @@ class DriversVehicles(Base):
         db.Integer, 
         db.ForeignKey('vehicles.id'),     
     )
+class Fleet(Base):
+    __tablename__ = 'fleets'
+    __table_args__ = {'extend_existing': True}
+    
+    id = db.Column(db.Integer(), primary_key=True)
+    
+    name =  db.Column(db.String(40))
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
+    #relations
+    fleet_type_id = db.Column(db.Integer, db.ForeignKey('fleet_types.id'))
+    fleet_type = db.relationship('FleetType')
 
+class FleetType(Base):
+    __tablename__ = 'fleet_types'
+    __table_args__ = {'extend_existing': True}
+    
+    id = db.Column(db.Integer(), primary_key=True)    
+    name =  db.Column(db.String(40))
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
 
 class Vehicle(Base):
     __tablename__ = 'vehicles'
@@ -107,6 +126,9 @@ class Vehicle(Base):
     driver_id = db.Column(db.Integer, db.ForeignKey('drivers.id', ondelete='cascade'),nullable=True)
     driver = db.relationship('Driver')
     maintenances = db.relationship('Maintenance',cascade="all, delete-orphan")
+
+    fleet_id = db.Column(db.Integer, db.ForeignKey('fleets.id', ondelete='cascade'),nullable=True)
+    fleet = db.relationship('Fleet')
     
     
     

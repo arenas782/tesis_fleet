@@ -87,7 +87,15 @@
                     Usuarios              
                   </p>
                 </a>        
-              </li>                    
+              </li>         
+              <li class="nav-item has-treeview ">
+                <a href="{{ url_for('fleets_bp.home') }}" class="nav-link {% if 'fleets' in segment %} active {% endif %}">
+                  <i class="nav-icon fas fa-warehouse"></i>
+                  <p>
+                    Flotas
+                  </p>
+                </a>              
+              </li>                       
             {%endif%}          
           
           
