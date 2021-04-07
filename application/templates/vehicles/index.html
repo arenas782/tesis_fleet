@@ -76,6 +76,15 @@
                           </select>
                       </div>  
                       <div class="form-group col-md-3"> 
+                        <label for="brands-select">Flota</label>
+                          <select  id="fleet-select" name="fleet_id" class="form-control select2 select2-hidden-accessible" style="width: 100%" >
+                              <option></option>
+                              {%for fleet in fleets%}        
+                                  <option value="{{fleet.id}}">{{fleet.name}}</option>
+                              {%endfor%}                                                  
+                          </select>
+                      </div>  
+                      <div class="form-group col-md-3"> 
                         <button type="submit" class="btn btn-primary">Buscar</button>
                       </div>
                     </div>
@@ -125,23 +134,23 @@
               <div class="card-footer">  
                 {% if vehicles.items|length > 0%}
                 <div class="text-right">
-                    <a href="{{ url_for('vehicles_bp.home', page=vehicles.prev_num,query=query,status_id=status_id) }}" class="btn btn-outline-dark  {% if vehicles.page == 1 %}disabled{% endif %}">
+                    <a href="{{ url_for('vehicles_bp.home', page=vehicles.prev_num,query=query,status_id=status_id,fleet_id=fleet_id) }}" class="btn btn-outline-dark  {% if vehicles.page == 1 %}disabled{% endif %}">
                       <i class="fas fa-chevron-left"></i>
                     </a>
                     {% for page_num in vehicles.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}{% if page_num %}
                       {% if vehicles.page == page_num %}
-                        <a href="{{ url_for('vehicles_bp.home' ,page=page_num,query=query,status_id=status_id) }}" class="btn btn-dark">
+                        <a href="{{ url_for('vehicles_bp.home' ,page=page_num,query=query,status_id=status_id,fleet_id=fleet_id) }}" class="btn btn-dark">
                           {{ page_num }}
                         </a>
                         {% else %}
-                          <a href="{{ url_for('vehicles_bp.home',page=page_num,query=query,status_id=status_id) }}" class="btn btn-outline-dark">
+                          <a href="{{ url_for('vehicles_bp.home',page=page_num,query=query,status_id=status_id,fleet_id=fleet_id) }}" class="btn btn-outline-dark">
                           {{ page_num }}
                           </a>
                       {% endif %}
                       {% else %}          
                       {% endif %}
                     {% endfor %} 
-                    <a href="{{ url_for('vehicles_bp.home',page=vehicles.next_num,query=query,status_id=status_id)}}" class="btn btn-outline-dark {% if vehicles.page == vehicles.pages %}disabled{% endif %}">
+                    <a href="{{ url_for('vehicles_bp.home',page=vehicles.next_num,query=query,status_id=status_id,fleet_id=fleet_id)}}" class="btn btn-outline-dark {% if vehicles.page == vehicles.pages %}disabled{% endif %}">
                       <i class="fas fa-chevron-right"></i>
                     </a>
                   </div>
@@ -184,6 +193,10 @@
         });
         $('#status-select').select2({
             placeholder: "Seleccione un status de vehículo",
+            allowClear: true
+        });
+        $('#fleet-select').select2({
+            placeholder: "Seleccione una flota",
             allowClear: true
         });
     });

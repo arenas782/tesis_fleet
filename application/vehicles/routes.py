@@ -29,22 +29,27 @@ def home():
     page = request.args.get('page', 1, type=int)
     query = request.args.get('query')
     status_id = request.args.get('status_id')
+    fleet_id = request.args.get('fleet_id')
     vehicles = Vehicle.query
     if query:        
         vehicles = vehicles.filter(Vehicle.plate.like('%'+query+'%'))
     if status_id:
         vehicles = vehicles.filter(Vehicle.vehicle_status_id==status_id)
-    else:        
-        vehicles = vehicles
+    if fleet_id:
+        vehicles = vehicles.filter(Vehicle.fleet_id==fleet_id)
+    
 
     vehicles = vehicles.order_by(Vehicle.created_at.desc()).paginate(page=page,per_page=rows_per_page)
     vehicles_status = VehicleStatus.query.all()
+    fleets = Fleet.query.all()
                         
     return render_template(
         'vehicles/index.html',        
         segment = 'vehicles',
         query = query,
         status_id = status_id,
+        fleet_id = fleet_id,
+        fleets = fleets,
         vehicles_status = vehicles_status,
         vehicles = vehicles,
         current_user=current_user,        
