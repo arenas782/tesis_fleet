@@ -1,4 +1,4 @@
-from flask import Blueprint,render_template,redirect,url_for,request,flash
+from flask import Blueprint,render_template,redirect,url_for,request,flash,jsonify
 from flask import current_app as app
 from .. import login_manager
 from ..models import Tracker,Vehicle,db,TrackerProtocol,TrackerCommand,TrackerCommandHistory,TrackerLog
@@ -7,6 +7,7 @@ from sqlalchemy import and_,or_
 from flask_login import login_required, logout_user, current_user, login_user, logout_user
 from datetime import date
 import sys
+
 
 
 # Blueprint Configuration
@@ -220,32 +221,42 @@ def print_logs():
         return 'error'
 
 @trackers_bp.route('/maps/<id>')
+
 def maps(id):
+    
     tracker = Tracker.query.get(id)
     if tracker:
+
+        return render_template(
+            'trackers/maps.html',        
+            segment = 'trackers',
+            tracker = tracker,
+            current_user=current_user,        
+        )
+
+@trackers_bp.route('/check_logs/<id>')
+def check_logs(id):
+    from datetime import datetime
+    from sqlalchemy import func
+    tracker = Tracker.query.get(id)
+    
+    if tracker:
         today = date.today()
-        d1 = today.strftime("%Y-%m-%d")
+        d1 = today.strftime('%Y-%m-%d %H:%M:%S')
+        ##d2 = datetime.strptime(today, '%Y-%m-%d %h:%M:%s')
         newdate  = request.args.get('daterange')
         markers = []
         if newdate:            
             newdate=newdate.split('-')
-            markers = TrackerLog.query.filter_by(tracker_id=tracker.id).filter(TrackerLog.date.between(newdate[0],newdate[1])).order_by(TrackerLog.created_at.desc())
+            markers = TrackerLog.query.filter_by(tracker_id=tracker.id).filter(func.date(TrackerLog.date).between(newdate[0],newdate[1])).order_by(TrackerLog.date.desc())
         else:
-            markers = TrackerLog.query.filter_by(tracker_id=tracker.id).filter_by(date=d1).order_by(TrackerLog.created_at.desc())
+            markers = TrackerLog.query.filter_by(tracker_id=tracker.id).filter(func.date(TrackerLog.date)==d1).order_by(TrackerLog.date.desc())
+        
+        
+        return jsonify( [i.serialize for i in markers.all()])
+    
+     
+        
 
-        print (markers.count())
-        if markers.count() <1:
-            flash('No hay registros para la fecha especificada','error')                
-        return render_template(
-            'trackers/maps.html',        
-            segment = 'trackers',
-            markers = markers,
-            current_user=current_user,        
-        )
-            
-
-        
-        
-        
 
 

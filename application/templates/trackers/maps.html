@@ -105,11 +105,11 @@
                 
                   </div>
                 <div class="card-body table-responsive p-4">
-                    <form method="GET" >
+                    <form method="GET" id="search-logs-form"  action="{{url_for('trackers_bp.check_logs',id=tracker.id)}}">
                         <div class="row">
                             <div class="form-group col-md-4"> 
                                 <label for="exampleInputEmail1">Fecha</label>
-                                <input type="text" name="daterange" value="01/01/2018 - 01/15/2018" />
+                                <input type="text"  id = "daterange" name="daterange"/>
                               </div>                                                                                     
                         </div>                                                            
                 </div>
@@ -168,6 +168,12 @@
 
 
 $(function() {
+
+
+
+
+
+
     $('input[name="daterange"]').daterangepicker({
     
     startDate: moment().format('YYYY/MM/DD'),    // 3/24/2021,
@@ -192,21 +198,56 @@ $(function() {
         zoom: 13 // starting zoom
     });
 
-    map.on('load',function(){
-        {%for marker in markers%}
-            var el = document.createElement('div');
-            el.className = detectMarkerType('{{marker.event}}');
 
-            var popup = new mapboxgl.Popup({ offset: 25 }).setText('{{marker.event}} - {{marker.date.strftime("%d/%m/%Y %H:%M:%S")}}');
+  function searchForLogs(){
+    var formData = {
+      daterange: $("#daterange").val()      
+    };
+    $( ".marker" ).remove();
+    $( ".marker-alert" ).remove();
+    
+
+    $.ajax({
+      type: "get",
+      url: "{{url_for('trackers_bp.check_logs',id=tracker.id)}}",
+      data: formData,
+      dataType: "json",
+      encode: true,
+    }).done(function (data) {
+      console.log(data);
+      if ( data && data.length>0){        
+            data.forEach(function(obj) {
+              var el = document.createElement('div');
+              el.className = detectMarkerType(obj.event);
+
+            var popup = new mapboxgl.Popup({ offset: 25 }).setText(obj.event + '-' + obj.date);
 
             new mapboxgl.Marker(el)
-            .setLngLat([{{marker.longitude}},{{marker.latitude}}])
+            .setLngLat([obj.longitude,obj.latitude])
             .setPopup(popup)
-            .addTo(map);
-        {%endfor%}
-    
-        
+            .addTo(map);        
+
+            });                    
+      }      
     });
+  }
+
+
+    $("#search-logs-form").submit(function (event) {
+        searchForLogs();
+        myFunction();
+        event.preventDefault();
+  });
+
+
+  var timerID
+
+function myFunction() {
+  clearInterval(timerID);
+  timerID = setInterval(searchForLogs, 20000);
+  
+}
+    
 
     function detectMarkerType(event){
         switch (event){

@@ -9,7 +9,6 @@ from config import config_by_name
 from flask_login import LoginManager
 
 
-
 # Globally accessible libraries
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -30,7 +29,7 @@ def init_app():
     # Initialize Plugins
     db.init_app(app)
     login_manager.init_app(app)
-    
+
     app.register_error_handler(404, page_not_found)
 
     with app.app_context():

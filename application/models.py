@@ -245,7 +245,18 @@ class TrackerLog(Base):
     tracker_id = db.Column(db.Integer, db.ForeignKey('trackers.id', ondelete='cascade'),nullable=True)
     tracker = db.relationship('Tracker')
 
+    @property
+    def serialize(self):
+        return {
+            'id'         : self.id,
+            'date': self.date.strftime('%d/%m/%Y %H:%M:%S'),
+            'latitude':float(self.latitude),
+            'longitude':float(self.longitude),
+            'event':self.event                
+        }
 
+
+        
     
 class Maintenance(Base):
     __tablename__ = 'maintenance_vehicles'
