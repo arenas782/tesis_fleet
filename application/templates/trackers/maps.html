@@ -203,8 +203,7 @@ $(function() {
     var formData = {
       daterange: $("#daterange").val()      
     };
-    $( ".marker" ).remove();
-    $( ".marker-alert" ).remove();
+
     
 
     $.ajax({
@@ -215,7 +214,9 @@ $(function() {
       encode: true,
     }).done(function (data) {
       console.log(data);
-      if ( data && data.length>0){        
+      if ( data && data.length>0){     
+            $( ".marker" ).remove();
+            $( ".marker-alert" ).remove();   
             data.forEach(function(obj) {
               var el = document.createElement('div');
               el.className = detectMarkerType(obj.event);
