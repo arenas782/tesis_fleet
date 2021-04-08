@@ -116,3 +116,20 @@ def delete(id):
     else:
         flash('Flota no encontrada','error')
     return redirect(url_for('fleets_bp.home'))    
+
+@fleets_bp.route('/print_vehicles/<id>')
+def print_vehicles(id):
+    from flask_weasyprint import HTML, render_pdf    
+    
+    
+    fleet = Fleet.query.get(id)
+
+    if fleet:
+        fleet_vehicles = Vehicle.query.filter_by(fleet_id=fleet.id).order_by(Vehicle.created_at.desc()).all()        
+        html = render_template('fleets/pdf_fleet_vehicles.html', fleet=fleet,fleet_vehicles=fleet_vehicles)
+        pdfname=fleet.name+'.pdf'
+        return render_pdf(HTML(string=html))
+        #return render_template('trackers/pdf_logs.html', logs=logs,tracker=tracker,from_date=from_date,to_date=to_date)
+    else:
+        return 'error'
+

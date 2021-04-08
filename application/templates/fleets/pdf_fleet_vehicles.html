@@ -1,0 +1,153 @@
+
+<style>
+
+.rtable {
+   
+    width: 100%;
+  
+  
+  vertical-align: top;
+  
+  overflow-x: auto;
+  
+  white-space: nowrap;
+
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+
+.rtable td:first-child,
+.rtable--flip tbody tr:first-child {
+  background-image: linear-gradient(to right, rgba(255,255,255, 1) 50%, rgba(255,255,255, 0) 100%);
+  background-repeat: no-repeat;
+  background-size: 20px 100%;
+}
+
+
+.rtable th {
+  font-size: 11px;
+  text-align: left;
+  text-transform: uppercase;
+  background: #007bff;
+  color:white;
+}
+
+.rtable th,
+.rtable td {
+  padding: 6px 12px;
+  border: 1px solid #d9d7ce;
+}
+
+
+body {
+    max-width: 2480px;
+    
+  margin: 0;
+  padding: 25px;
+  color: #494b4d;
+  font-size: 14px;
+  line-height: 20px;
+  font-family:courier,arial,helvetica;
+}
+
+h1, h2, h3 {
+  margin: 0 0 10px 0;
+  color: #1d97bf;
+}
+
+h1 {
+  font-size: 25px;
+  line-height: 30px;
+}
+
+h2 {
+  font-size: 20px;
+  line-height: 25px;
+}
+
+h3 {
+  font-size: 16px;
+  line-height: 20px;
+}
+
+table {
+  margin-bottom: 30px;
+}
+
+a {
+  color: #ff6680;
+}
+
+code {
+  background: #fffbcc;
+  font-size: 12px;
+}
+
+
+driver-name {
+  
+  font-size: 8px;
+}
+@page {
+  size: A4;
+  margin: 1.6cm .6cm 1.2cm .6cm;
+
+  @top-center {
+    content: string(doctitle);
+  }
+}
+
+
+</style>
+
+
+
+<h1>UNEGFLEET - REPORTE</h1>
+<h2>Flota: {{fleet.name}}</h2>
+<h3>Tipo de flota:  {{fleet.fleet_type.name}}</h3>
+
+<table class="rtable">
+  <thead>
+    <tr>
+      <th>Placa</th>
+      <th>Marca/Modelo/Año</th>      
+      <th>Conductor</td>
+      <th>Status</td>
+      
+    </tr>
+  </thead>
+  <tbody>
+      {%for vehicle in fleet_vehicles%}
+      
+        <tr>
+            <td>{{vehicle.plate}}</td>
+            <td>{{vehicle.brand.name}}/{{vehicle.model}}/{{vehicle.year}}</td>            
+            <td class="driver-name">{%if vehicle.driver %}{{vehicle.driver.name}} {{vehicle.driver.lastname}}{%else%}Sin asignar{%endif%}</td>
+            <td>{{vehicle.status.name}}</td>
+        </tr>
+        {%if loop.index % 20 ==0%}
+    </tbody>
+    </table>
+    <p style="page-break-before: always" ></p>
+    <table class="rtable">
+        <thead>
+            <tr>
+                <th>Placa</th>
+                <th>Marca/Modelo</th>
+                <th>Año/Color</td>
+                <th>Conductor</td>
+                <th>Status</td>
+              
+            </tr>
+          </thead>
+        <tbody>
+            
+
+        {%endif%}
+      {%endfor%}        
+      
+     
+     
+  </tbody>
+</table>

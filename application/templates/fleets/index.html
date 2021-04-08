@@ -82,6 +82,7 @@
                         <td>{{fleet[4]}}</td>
                         <td>{{fleet[3]}}</td>
                         <td>
+                            <a href="{{url_for('fleets_bp.print_vehicles',id=fleet[0])}}"><i class="icon fas fa-print"></i></a>
                             <a href="{{url_for('fleets_bp.detail',id=fleet[0])}}"><i class="icon fas fa-eye"></i></a>
                             <a href="{{url_for('fleets_bp.edit',id=fleet[0])}}"><i class="icon fas fa-edit"></i></a>
                             <a onclick="confirmation(event)" href="{{url_for('fleets_bp.delete',id=fleet[0])}}"><i class="icon fas fa-trash"></i></a>
