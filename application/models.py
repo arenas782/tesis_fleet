@@ -286,7 +286,6 @@ class Maintenance(Base):
 
     id = db.Column(db.Integer(), primary_key=True)    
     status = db.Column(db.Numeric(10,6),nullable=True,default="Pendiente")
-    comment = db.Column(db.Numeric(10,6),nullable=True)
     maintenance_type = db.Column(db.String(15))
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
