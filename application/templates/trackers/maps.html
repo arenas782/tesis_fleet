@@ -36,8 +36,8 @@
       .marker {
   background-image: url('/static/assets/img/pin-default.png');
   background-size: cover;
-  width: 50px;
-  height: 50px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   cursor: pointer;
 }
@@ -45,8 +45,26 @@
 .marker-alert {
   background-image: url('/static/assets/img/pin-alert.png');
   background-size: cover;
-  width: 50px;
-  height: 50px;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.arrow {
+  background-image: url('/static/assets/img/arrow.png');
+  background-size: cover;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.arrow-alert {
+  background-image: url('/static/assets/img/arrow-alert.png');
+  background-size: cover;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   cursor: pointer;
 }
@@ -165,7 +183,7 @@
 
 $(function() {
 
-
+  currentMarkers=[];
 
 
 
@@ -199,6 +217,11 @@ $(function() {
     var formData = {
       daterange: $("#daterange").val()      
     };
+    if (currentMarkers!==null) {
+    for (var i = currentMarkers.length - 1; i >= 0; i--) {
+      currentMarkers[i].remove();
+    }
+}
 
     
 
@@ -212,19 +235,29 @@ $(function() {
       console.log(data);
       if ( data && data.length>0){     
             $( ".marker" ).remove();
-            $( ".marker-alert" ).remove();   
+            $( ".marker-alert" ).remove(); 
+            $( ".arrow-alert" ).remove();  
+            $( ".arrow" ).remove();
             data.forEach(function(obj) {
               var el = document.createElement('div');
-              el.className = detectMarkerType(obj.event);
+              el.className = detectMarkerType(obj.event,obj.orientation);
+              var rotation=0;
+              if (obj.orientation >=0){
+                  rotation = obj.orientation;
+              }            
+              
 
-            var popup = new mapboxgl.Popup({ offset: 25 }).setText(obj.event + '-' + obj.date);
+            var popup = new mapboxgl.Popup({ offset: 25 }).setText(obj.event + ' - ' + obj.date+ ' - '+obj.speed+'Km/h');
 
-            new mapboxgl.Marker(el)
+            newMarker = new mapboxgl.Marker(el)
             .setLngLat([obj.longitude,obj.latitude])
             .setPopup(popup)
-            .addTo(map);        
-
-            });                    
+            .setRotation(rotation)
+            .addTo(map);    
+            currentMarkers.push(newMarker);
+            });                 
+            
+           
       }      
     });
   }
@@ -246,17 +279,24 @@ function myFunction() {
 }
     
 
-    function detectMarkerType(event){
-        switch (event){
-            case 'Posición':
-                return 'marker';
-            case 'Alarma puerta':            
-                return 'marker-alert';
-            case 'Desactivar motor':            
-                return 'marker-alert';
-            default :
-                return 'marker';
+    function detectMarkerType(event,orientation){
+      var base_class="";
+      var type="";
+      if(orientation>=0)
+        base_class="arrow";
+        else
+          base_class="marker";
+
+      switch (event){
+        case 'Posición':
+          type="";
+          break;        
+        default :
+          type="-alert";
+          break;
         }
+        console.log("event: "+event+" orientacion: "+orientation+ "clase: "+ base_class+type);
+        return base_class+type;
     }
 
 

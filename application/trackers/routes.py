@@ -212,7 +212,7 @@ def print_logs():
     to_date = request.args.get('to')
     tracker = Tracker.query.get(tracker_id)
     if tracker:
-        logs = TrackerLog.query.filter_by(tracker_id=tracker.id).filter(TrackerLog.date.between(from_date,to_date))
+        logs = TrackerLog.query.filter_by(tracker_id=tracker.id).filter(TrackerLog.date.between(from_date,to_date)).order_by(TrackerLog.date.desc())
         html = render_template('trackers/pdf_logs.html', logs=logs,tracker=tracker,from_date=from_date,to_date=to_date)
         pdfname=tracker.imei+'.pdf'
         return render_pdf(HTML(string=html))

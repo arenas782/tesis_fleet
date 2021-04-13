@@ -100,7 +100,8 @@
                     <thead>
                       <tr>
                         <th>Evento</th>
-                        <th>Latitud / Longitud</th>                      
+                        <th>Coordenadas</th>                      
+                        <th>Velocidad</th>
                         <th>Fecha</th>                      
                         
                         
@@ -111,6 +112,7 @@
                         <tr>
                           <td>{{log.event}}</td>
                           <td>{{log.latitude}} / {{log.longitude}}</td>                      
+                          <td>{{log.speed}}  Km/h</td>
                           <td>{{log.date.strftime('%d/%m/%Y %H:%M:%S')}}</td>                                                                                                                          
                         </tr>
                       {%endfor%}                    

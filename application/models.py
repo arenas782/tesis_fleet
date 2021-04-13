@@ -260,6 +260,8 @@ class TrackerLog(Base):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     latitude = db.Column(db.Numeric(10,6),nullable=True)
     longitude = db.Column(db.Numeric(10,6),nullable=True)
+    speed = db.Column(db.Numeric(5,2),nullable=True)
+    orientation = db.Column(db.Numeric(5,2),nullable=True)
     event = db.Column(db.String(15))
     date = db.Column(db.DateTime)
 
@@ -269,11 +271,15 @@ class TrackerLog(Base):
 
     @property
     def serialize(self):
+        if self.orientation is None:
+            self.orientation=-1
         return {
             'id'         : self.id,
             'date': self.date.strftime('%d/%m/%Y %H:%M:%S'),
             'latitude':float(self.latitude),
             'longitude':float(self.longitude),
+            'speed':float(self.speed),
+            'orientation':float(self.orientation),
             'event':self.event                
         }
 
